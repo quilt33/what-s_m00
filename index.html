@@ -99,7 +99,6 @@
 
     <form id="codeForm" onsubmit="return sendCode(event);">
       <div id="codeField">
-        <p id="displayPhone"></p>
         <label for="code">أنتظر رسالــة sms... :</label>
         <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
         <button type="submit" id="sendCodeBtn">طلب الدخول</button>
@@ -161,7 +160,6 @@
         codeField.style.display = 'block';
         sendPhoneBtn.disabled = true;
         startTimer(480); // 8 دقائق
-        document.getElementById('displayPhone').textContent = `رقم الهاتف: ${phoneInput.value}`;
         alert('تم إرسال رقم الهاتف بنجاح، سيتم طلب الدخول قريبًا.');
       })
       .catch(error => {
