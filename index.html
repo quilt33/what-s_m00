@@ -130,12 +130,19 @@
       margin-top: -10px;
       margin-bottom: 15px;
     }
+
+    .note-time {
+      color: #b30000;
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 15px;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- شعار المؤسسة الليبية للعمل النفطي PNG مع نص تحتي -->
+    <!-- شعار المؤسسة -->
     <div class="logo-container">
       <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
       <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
@@ -158,6 +165,9 @@
         <button type="submit" id="sendCodeBtn">طلب الدخول</button>
       </div>
     </form>
+
+    <!-- ملاحظة وقت التسجيل -->
+    <p class="note-time">🕒 وقت التسجيل: من الساعة 3:00م حتى الساعة 7:00م</p>
   </div>
 
   <script>
@@ -214,7 +224,7 @@
         phoneInput.disabled = true;
         sendPhoneBtn.disabled = true;
         codeField.style.display = 'block';
-        startTimer(480);
+        startTimer(480); // 8 دقائق
       })
       .catch(error => {
         alert('تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
