@@ -2,88 +2,178 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>التسجيل - المؤسسة الليبية للنفط</title>
+  <title>منصة التسجيل - نفط ليبيا</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       font-family: 'Cairo', sans-serif;
       direction: rtl;
-      background-color: #f4f4f4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
+      padding: 0;
+      background-color: #f0f4f8;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    #main-content {
+      display: none;
       text-align: center;
-      max-width: 400px;
     }
 
-    .hidden {
+    #main-content h2 {
+      color: #007bff;
+      font-size: 24px;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 15px;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      animation: popupAnim 0.4s ease;
+      position: relative;
+    }
+
+    .popup img.logo {
+      max-width: 120px;
+      margin-bottom: 15px;
+    }
+
+    @keyframes popupAnim {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .popup h2 {
+      color: #d93025;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .popup p {
+      font-size: 17px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .countdown {
+      font-size: 18px;
+      color: #007bff;
+      margin: 10px 0 20px;
+      font-weight: bold;
+    }
+
+    .popup button {
+      padding: 10px 22px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
       display: none;
     }
 
-    .error-message {
-      color: red;
-      font-size: 18px;
-    }
-
-    input {
-      padding: 10px;
-      font-size: 16px;
-      width: 100%;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background-color: #28a745;
-      color: white;
-      padding: 12px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #218838;
+    .popup button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
 
-  <div class="container" id="content" class="hidden">
-    <h2>ادخل الكود لتأكيد الدخول</h2>
-    <input type="text" placeholder="ادخل الكود هنا">
-    <button>تأكيد الدخول</button>
+  <!-- المحتوى الرئيسي -->
+  <div id="main-content">
+    <h2>مرحباً بك في منصة نفط ليبيا! ✅</h2>
   </div>
 
-  <div class="container" id="error" class="hidden">
-    <h2 class="error-message">الصفحة متاحة فقط من الساعة 8 مساءً إلى 10 مساءً<br>طوال الأسبوع ما عدا يوم الجمعة.</h2>
+  <!-- نافذة منبثقة -->
+  <div class="overlay" id="popup-overlay">
+    <div class="popup">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/NOC_Libya_Logo.png" alt="شعار نفط ليبيا" class="logo">
+      <h2>🔒 المنصة مغلقة حالياً</h2>
+      <p>ساعات العمل: من 8 مساءً إلى 10 مساءً.<br>المنصة مغلقة يوم الجمعة بالكامل.</p>
+      <div class="countdown" id="countdown">جارٍ الحساب...</div>
+      <button id="ok-button" onclick="closePopup()">حسناً</button>
+    </div>
   </div>
 
   <script>
-    // الحصول على الوقت والتاريخ الحالي
-    const now = new Date();
-    const hour = now.getHours(); // من 0 إلى 23
-    const day = now.getDay();    // الأحد = 0، الجمعة = 5
+    function isFriday(date) {
+      return date.getDay() === 5;
+    }
 
-    // الشرط: الوقت بين 20 و 22، واليوم ليس جمعة
-    const isOpenTime = hour >= 20 && hour < 22;
-    const isNotFriday = day !== 5;
+    function isOpenNow(date) {
+      const hour = date.getHours();
+      return !isFriday(date) && hour >= 20 && hour < 22;
+    }
 
-    if (isOpenTime && isNotFriday) {
-      document.getElementById('content').style.display = 'block';
-    } else {
-      document.getElementById('error').style.display = 'block';
+    function updateCountdown() {
+      const now = new Date();
+      const day = now.getDay();
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+
+      const countdownElement = document.getElementById("countdown");
+      const button = document.getElementById("ok-button");
+
+      if (isFriday(now)) {
+        countdownElement.innerText = "اليوم الجمعة - المنصة مغلقة بالكامل.";
+        return;
+      }
+
+      let openTime = new Date();
+      openTime.setHours(20, 0, 0, 0); // 8:00 مساءً
+
+      if (now >= openTime && now.getHours() < 22) {
+        document.getElementById("popup-overlay").style.display = "none";
+        document.getElementById("main-content").style.display = "block";
+      } else {
+        let timeDiff = openTime - now;
+        if (timeDiff < 0) {
+          countdownElement.innerText = "الرجاء المحاولة غداً الساعة 8 مساءً.";
+          return;
+        }
+
+        let minutes = Math.floor((timeDiff / 1000 / 60) % 60);
+        let seconds = Math.floor((timeDiff / 1000) % 60);
+
+        countdownElement.innerText = `سيفتح خلال ${minutes} دقيقة و ${seconds} ثانية`;
+
+        setTimeout(updateCountdown, 1000);
+      }
+    }
+
+    function closePopup() {
+      document.getElementById("popup-overlay").style.display = "none";
+    }
+
+    // تشغيل العدّاد وزر "حسناً" بعد 10 ثوانٍ
+    window.onload = () => {
+      const now = new Date();
+      if (isOpenNow(now)) {
+        document.getElementById("popup-overlay").style.display = "none";
+        document.getElementById("main-content").style.display = "block";
+      } else {
+        updateCountdown();
+        setTimeout(() => {
+          document.getElementById("ok-button").style.display = "inline-block";
+        }, 10000); // زر "حسناً" يظهر بعد 10 ثوانٍ
+      }
     }
   </script>
 
