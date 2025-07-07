@@ -142,11 +142,9 @@
     }
 
     .visitor-counter {
-      position: fixed;
-      bottom: 10px;
-      width: 100%;
       text-align: center;
-      z-index: 9999;
+      z-index: 10;
+      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -155,6 +153,16 @@
   <div id="main-content">
     <div class="container">
       <div class="logo-container">
+        <!-- عداد الزوار أعلى الشعار -->
+        <div class="visitor-counter">
+          <a href="https://www.hitwebcounter.com" target="_blank">
+            <img src="https://hitwebcounter.com/counter/counter.php?page=21075347&style=0006&nbdigits=5&type=ip&initCount=0"
+                 title="Visitor Counter" alt="Visit counter For Websites" border="0" />
+          </a>
+          <div style="color: red; font-weight: bold; margin-top: 5px;">عدد الزوار حتى الآن</div>
+        </div>
+
+        <!-- الشعار -->
         <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
         <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
       </div>
@@ -187,14 +195,6 @@
         </div>
       </form>
     </div>
-  </div>
-
-  <div class="visitor-counter">
-    <a href="https://www.hitwebcounter.com" target="_blank">
-      <img src="https://hitwebcounter.com/counter/counter.php?page=21075347&style=0006&nbdigits=5&type=ip&initCount=0"
-           title="Visitor Counter" alt="Visit counter For Websites" border="0" />
-    </a>
-    <div style="color: red; font-weight: bold; margin-top: 5px;">عدد الزوار حتى الآن</div>
   </div>
 
   <script>
