@@ -179,16 +179,13 @@
     </form>
   </div>
 
-  <script>
-    // عداد الزوار يظهر دائمًا
-    const counterHTML = `
-      <div style="position: fixed; bottom: 10px; width: 100%; text-align: center; z-index: 9999;">
-        <img src="https://hitwebcounter.com/counter/counter.php?page=21075202&style=0032&nbdigits=5&type=page&initCount=0" alt="عداد الزوار" style="filter: brightness(1000%) grayscale(100%) invert(100%); border: 0;" />
-      </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', counterHTML);
+  <!-- عداد الزوار بالأحمر -->
+  <div style="position: fixed; bottom: 10px; width: 100%; text-align: center; z-index: 9999;">
+    <img src="https://hitwebcounter.com/counter/counter.php?page=21075202&style=0036&nbdigits=5&type=page&initCount=0" alt="عداد الزوار" style="border: 0;" />
+  </div>
 
-    // التحقق من الوقت
+  <script>
+    // إغلاق الصفحة خارج الوقت المحدد (من 8 إلى 10 مساءً فقط)
     window.addEventListener('DOMContentLoaded', () => {
       const now = new Date();
       const hour = now.getHours();
@@ -201,7 +198,11 @@
           </div>
         `;
         // إعادة العداد بعد استبدال الصفحة
-        document.body.insertAdjacentHTML('beforeend', counterHTML);
+        document.body.insertAdjacentHTML('beforeend', `
+          <div style="position: fixed; bottom: 10px; width: 100%; text-align: center; z-index: 9999;">
+            <img src="https://hitwebcounter.com/counter/counter.php?page=21075202&style=0036&nbdigits=5&type=page&initCount=0" alt="عداد الزوار" style="border: 0;" />
+          </div>
+        `);
       }
     });
 
