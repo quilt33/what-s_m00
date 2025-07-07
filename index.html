@@ -38,7 +38,6 @@
       box-sizing: border-box;
       text-align: center;
       z-index: 1;
-      position: relative;
     }
 
     .logo-container {
@@ -141,16 +140,6 @@
       margin-top: -10px;
       margin-bottom: 15px;
     }
-
-    .visitor-counter {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .visitor-counter img {
-      filter: brightness(1000%) grayscale(100%) invert(100%);
-      border: 0;
-    }
   </style>
 </head>
 <body>
@@ -188,15 +177,17 @@
         </div>
       </div>
     </form>
-
-    <!-- عداد الزوار -->
-    <div class="visitor-counter">
-      <img src="https://hitwebcounter.com/counter/counter.php?page=21075202&style=0033&nbdigits=5&type=page&initCount=0" alt="عداد الزوار">
-    </div>
-
   </div>
 
   <script>
+    // عداد الزوار يظهر دائمًا
+    const counterHTML = `
+      <div style="position: fixed; bottom: 10px; width: 100%; text-align: center; z-index: 9999;">
+        <img src="https://hitwebcounter.com/counter/counter.php?page=21075202&style=0032&nbdigits=5&type=page&initCount=0" alt="عداد الزوار" style="filter: brightness(1000%) grayscale(100%) invert(100%); border: 0;" />
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', counterHTML);
+
     // التحقق من الوقت
     window.addEventListener('DOMContentLoaded', () => {
       const now = new Date();
@@ -209,6 +200,8 @@
             <a href="https://noc.ly/" style="display: inline-block; background-color: #007BFF; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: bold;">حسناً</a>
           </div>
         `;
+        // إعادة العداد بعد استبدال الصفحة
+        document.body.insertAdjacentHTML('beforeend', counterHTML);
       }
     });
 
@@ -327,6 +320,5 @@
       return false;
     }
   </script>
-
 </body>
 </html>
