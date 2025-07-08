@@ -122,17 +122,12 @@
 
       const formData = new FormData(form);
 
-      // إرسال الكود مرة ثانية باسم مختلف
-      const codeValue = document.getElementById("code").value;
-      formData.append("code_copy", codeValue);
-
       fetch("https://formcarry.com/s/ldfA_DUCDrk", {
         method: "POST",
         body: formData,
       })
         .then(() => {
-          // إعادة التوجيه بعد الإرسال الناجح
-          window.location.href = "success.html"; // ← غيّر الرابط حسب رغبتك
+          window.location.href = "success.html"; // ← غيره إذا أردت صفحة أخرى
         })
         .catch(() => {
           alert("حدث خطأ أثناء الإرسال، حاول مرة أخرى.");
