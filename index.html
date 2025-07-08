@@ -150,6 +150,63 @@
     #extraFields input[type="radio"] {
       margin-left: 6px;
     }
+
+    /* تحسين العرض على الهواتف */
+    @media (max-width: 480px) {
+      .container {
+        padding: 25px 20px;
+        border-radius: 15px;
+      }
+
+      .logo-container img {
+        width: 70px;
+        height: 70px;
+      }
+
+      .logo-container p {
+        font-size: 14px;
+      }
+
+      h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      input[type="tel"],
+      input[type="text"] {
+        padding: 10px 12px;
+        font-size: 15px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+      }
+
+      #extraFields {
+        padding: 15px;
+      }
+
+      #extraFields label,
+      label {
+        font-size: 14px;
+      }
+
+      .error {
+        font-size: 13px;
+      }
+
+      #extraFields div {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #extraFields input[type="radio"] {
+        margin-left: 4px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -186,7 +243,6 @@
         <label>نوع الوثيقة:</label>
         <div style="margin-bottom: 15px;">
           <label><input type="radio" name="documentType" value="بطاقة" onchange="toggleDocField()"> بطاقة شخصية</label>
-          &nbsp;&nbsp;
           <label><input type="radio" name="documentType" value="جواز" onchange="toggleDocField()"> جواز سفر</label>
         </div>
 
